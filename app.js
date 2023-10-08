@@ -111,7 +111,7 @@ class School {
     constructor() {
         // implement 'add area', 'remove area', 'add lecturer', and 'remove lecturer' methods
         this._areas = [];
-        this._lecturers = []; // Name, surname, position, company, experience, courses, contacts
+        this._lecturers = {}; // Name, surname, position, company, experience, courses, contacts
     }
     get areas() {
         return this._areas;
@@ -134,63 +134,118 @@ class School {
         this._areas.splice(index, 1);
     }
 }
-// class Area {
-//   // implement getters for fields and 'add/remove level' methods
-//   _levels = [];
-//   _name;
-//   constructor(name) {
-//     this._name = name;
-//   }
-// }
-// class Level {
-//   // implement getters for fields and 'add/remove group' methods
-//   _groups;
-//   _name;
-//   constructor(name, description) {
-//     this.name = name;
-//     this._description = description;
-//   }
-// }
-// class Group {
-//   // implement getters for fields and 'add/remove student' and 'set status' methods
-//   _area;
-//   _status;
-//   _students = []; // Modify the array so that it has a valid toSorted method*
-//   constructor(directionName, levelName) {
-//     this.directionName = directionName;
-//     this.levelName = levelName;
-//   }
-//   showPerformance() {
-//     const sortedStudents = this._students.toSorted((a, b) => b.getPerformanceRating() - a.getPerformanceRating());
-//     return sortedStudents;
-//   }
-// }
-// class Student {
-//   // implement 'set grade' and 'set visit' methods
-//   _firstName;
-//   _lastName;
-//   _birthYear;
-//   _grades = []; // workName: mark
-//   _visits = []; // lesson: present
-//   constructor(firstName, lastName, birthYear) {
-//     this._firstName = firstName;
-//     this._lastName = lastName;
-//     this._birthYear = birthYear;
-//   }
-//   get fullName() {
-//     return `${this._lastName} ${this._firstName}`;
-//   }
-//   set fullName(value) {
-//     [this._lastName, this._firstName] = value.split(' ');
-//   }
-//   get age() {
-//     return new Date().getFullYear() - this._birthYear;
-//   }
-//   getPerformanceRating() {
-//     const gradeValues = Object.values(this._grades);
-//     if (!gradeValues.length) return 0;
-//     const averageGrade = gradeValues.reduce((sum, grade) => sum + grade, 0) / gradeValues.length;
-//     const attendancePercentage = (this._visits.filter(present => present).length / this._visits.length) * 100;
-//     return (averageGrade + attendancePercentage) / 2;
-//   }
-// }
+class Area {
+    constructor(name) {
+        // implement getters for fields and 'add/remove level' methods
+        this._levels = [];
+        this._name = name;
+    }
+    get name() {
+        return this._name;
+    }
+    get levels() {
+        return this._levels;
+    }
+    addLevel(level) {
+        this._levels.push(level);
+    }
+    removeLevel(level) {
+        const index = this._levels.indexOf(level);
+        if (index !== -1) {
+            this._levels.splice(index, 1);
+        }
+    }
+}
+class Level {
+    constructor(name, description) {
+        // implement getters for fields and 'add/remove group' methods
+        this._groups = [];
+        this._name = name;
+        this._description = description;
+    }
+    get name() {
+        return this._name;
+    }
+    get description() {
+        return this._description;
+    }
+    get groups() {
+        return this._groups;
+    }
+    addGroup(group) {
+        this._groups.push(group);
+    }
+    removeGroup(group) {
+        const index = this._groups.indexOf(group);
+        if (index !== -1) {
+            this._groups.splice(index, 1);
+        }
+    }
+}
+class Group {
+    get area() {
+        return this._area;
+    }
+    get status() {
+        return this._status;
+    }
+    get students() {
+        return this._students;
+    }
+    set status(value) {
+        this._status = value;
+    }
+    addStudent(student) {
+        this._students.push(student);
+    }
+    removeStudent(student) {
+        const index = this._students.indexOf(student);
+        if (index !== -1) {
+            this._students.splice(index, 1);
+        }
+    }
+    constructor(directionName, levelName) {
+        this._students = []; // Modify the array so that it has a valid toSorted method*
+        this._area = `${directionName} - ${levelName}`;
+        this._status = true;
+    }
+    setStatus(status) {
+        this._status = status;
+    }
+    showPerformance() {
+        const sortedStudents = this._students.toSorted((a, b) => b.getPerformanceRating() - a.getPerformanceRating());
+        return sortedStudents;
+    }
+}
+class Student {
+    constructor(firstName, lastName, birthYear) {
+        this._grades = {}; // workName: mark
+        this._visits = {}; // lesson: present
+        this._firstName = firstName;
+        this._lastName = lastName;
+        this._birthYear = birthYear;
+    }
+    get fullName() {
+        return `${this._lastName} ${this._firstName}`;
+    }
+    set fullName(value) {
+        [this._lastName, this._firstName] = value.split(' ');
+    }
+    get age() {
+        return new Date().getFullYear() - this._birthYear;
+    }
+    setGrade(workName, mark) {
+        this._grades[workName] = mark;
+    }
+    setVisit(lesson, present) {
+        this._visits[lesson] = present;
+    }
+    getPerformanceRating() {
+        const gradeValues = Object.values(this._grades);
+        if (!gradeValues.length)
+            return 0;
+        const averageGrade = gradeValues.reduce((sum, grade) => sum + grade, 0) / gradeValues.length;
+        const attendancePercentage = (Object.values(this._visits).filter(present => present).length / Object.values(this._visits).length) * 100;
+        return (averageGrade + attendancePercentage) / 2;
+    }
+}

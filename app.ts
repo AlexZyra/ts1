@@ -339,21 +339,38 @@
 // }
 
 
-abstract class Shape {
+interface IShape {
   readonly name: string;
   readonly color: string;
+  calculateArea(): number;
+}
 
-  constructor(name: string, color: string) {
-    this.name = name;
-    this.color = color;
-  }
+interface IRadios {
+  readonly radius: number
+}
+
+interface IHeight {
+  readonly height: number
+}
+
+interface IWidth {
+  readonly width: number
+}
+
+interface IPrint {
+  print(): void;
+}
+
+abstract class Shape implements IShape {
+  abstract readonly name: string;
+  abstract readonly color: string;
 
   abstract calculateArea(): number;
 }
 
-class Circle extends Shape {
-  constructor(name: string, color: string, readonly radius: number) {
-    super(name, color);
+class Circle extends Shape implements IRadios {
+  constructor(readonly name: string, readonly color: string, readonly radius: number) {
+    super()
   }
 
   override calculateArea(): number {
@@ -361,41 +378,41 @@ class Circle extends Shape {
   }
 }
 
-class Rectangle extends Shape {
-  constructor(name: string, color: string, readonly width: number, readonly height: number) {
-    super(name, color);
+class Rectangle extends Shape implements IPrint, IHeight, IWidth {
+  constructor(readonly name: string, readonly color: string, readonly width: number, readonly height: number) {
+    super();
   }
 
   override calculateArea(): number {
     return this.width * this.height;
   }
 
-  print(): void {
+  print() {
     console.log(`Area of ${this.name} = ${this.width} * ${this.height}`);
   }
 }
 
-class Square extends Shape {
-  constructor(name: string, color: string, readonly sideLength: number) {
-    super(name, color);
+class Square extends Shape implements IPrint, IWidth {
+  constructor(readonly name: string, readonly color: string, readonly width: number) {
+    super();
   }
 
   override calculateArea(): number {
-    return this.sideLength * this.sideLength;
+    return this.width * this.width;
   }
 
-  print(): void {
-    console.log(`Area of ${this.name} = ${this.sideLength} * ${this.sideLength}`);
+  print() {
+    console.log(`Area of ${this.name} = ${this.width} * ${this.width}`);
   }
 }
 
-class Triangle extends Shape {
-  constructor(name: string, color: string, readonly base: number, readonly height: number) {
-    super(name, color);
+class Triangle extends Shape implements IHeight, IWidth {
+  constructor(readonly name: string, readonly color: string, readonly width: number, readonly height: number) {
+    super();
   }
 
   override calculateArea(): number {
-    return 0.5 * this.base * this.height;
+    return 0.5 * this.width * this.height;
   }
 }
 

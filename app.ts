@@ -339,8 +339,7 @@
 // }
 
 
-// Класс створенный як шаблон
-class Shape {
+abstract class Shape {
   readonly name: string;
   readonly color: string;
 
@@ -349,35 +348,25 @@ class Shape {
     this.color = color;
   }
 
-  calculateArea(): number {
-    return 0;
-  }
+  abstract calculateArea(): number;
 }
 
 class Circle extends Shape {
-  readonly radius: number;
-
-  constructor(name: string, color: string, radius: number) {
+  constructor(name: string, color: string, readonly radius: number) {
     super(name, color);
-    this.radius = radius;
   }
 
-  calculateArea(): number {
+  override calculateArea(): number {
     return Math.PI * this.radius ** 2;
   }
 }
 
 class Rectangle extends Shape {
-  readonly width: number;
-  readonly height: number;
-
-  constructor(name: string, color: string, width: number, height: number) {
+  constructor(name: string, color: string, readonly width: number, readonly height: number) {
     super(name, color);
-    this.width = width;
-    this.height = height;
   }
 
-  calculateArea(): number {
+  override calculateArea(): number {
     return this.width * this.height;
   }
 
@@ -387,14 +376,11 @@ class Rectangle extends Shape {
 }
 
 class Square extends Shape {
-  readonly sideLength: number
-
-  constructor(name: string, color: string, sideLength: number) {
+  constructor(name: string, color: string, readonly sideLength: number) {
     super(name, color);
-    this.sideLength = sideLength
   }
 
-  calculateArea(): number {
+  override calculateArea(): number {
     return this.sideLength * this.sideLength;
   }
 
@@ -404,16 +390,11 @@ class Square extends Shape {
 }
 
 class Triangle extends Shape {
-  readonly base: number;
-  readonly height: number;
-
-  constructor(name: string, color: string, base: number, height: number) {
+  constructor(name: string, color: string, readonly base: number, readonly height: number) {
     super(name, color);
-    this.base = base;
-    this.height = height;
   }
 
-  calculateArea(): number {
+  override calculateArea(): number {
     return 0.5 * this.base * this.height;
   }
 }

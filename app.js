@@ -258,14 +258,10 @@
 //     return (averageGrade + attendancePercentage) / 2;
 //   }
 // }
-// Класс створенный як шаблон
 class Shape {
     constructor(name, color) {
         this.name = name;
         this.color = color;
-    }
-    calculateArea() {
-        return 0;
     }
 }
 class Circle extends Shape {

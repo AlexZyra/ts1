@@ -1,57 +1,41 @@
 "use strict";
 // let firstWord: string = "Hello World on TS"
 // console.log(firstWord);
-class Shape {
+const A = {
+    key: '2',
+    123: 45,
+    key1: 67
+};
+const B = {
+    sum: (a, b) => a + b,
+    greet: (name) => `Hello, ${name}!`
+};
+const myArrayLikeObject = {
+    0: 'Its',
+    1: 'written',
+    2: 'on',
+    3: 'TypeScript',
+    length: 4
+};
+const dude = {
+    name: "Alex",
+    city: 'Dnipro',
+    course: 2,
+    learns: true
+};
+const person = {
+    name: "Alex",
+    age: 18
+};
+function areAllValuesNumbers(obj) {
+    for (const key in obj) {
+        if (typeof obj[key] !== "number") {
+            return false;
+        }
+    }
+    return true;
 }
-class Circle extends Shape {
-    constructor(name, color, radius) {
-        super();
-        this.name = name;
-        this.color = color;
-        this.radius = radius;
-    }
-    calculateArea() {
-        return Math.PI * this.radius ** 2;
-    }
-}
-class Rectangle extends Shape {
-    constructor(name, color, width, height) {
-        super();
-        this.name = name;
-        this.color = color;
-        this.width = width;
-        this.height = height;
-    }
-    calculateArea() {
-        return this.width * this.height;
-    }
-    print() {
-        console.log(`Area of ${this.name} = ${this.width} * ${this.height}`);
-    }
-}
-class Square extends Shape {
-    constructor(name, color, width) {
-        super();
-        this.name = name;
-        this.color = color;
-        this.width = width;
-    }
-    calculateArea() {
-        return this.width * this.width;
-    }
-    print() {
-        console.log(`Area of ${this.name} = ${this.width} * ${this.width}`);
-    }
-}
-class Triangle extends Shape {
-    constructor(name, color, width, height) {
-        super();
-        this.name = name;
-        this.color = color;
-        this.width = width;
-        this.height = height;
-    }
-    calculateArea() {
-        return 0.5 * this.width * this.height;
-    }
-}
+const obj1 = { key1: 1, key2: 1.5, key3: "string" };
+const obj2 = { key1: 1, key2: 1.5, key3: 23521 };
+console.log(areAllValuesNumbers(obj1));
+console.log(areAllValuesNumbers(obj2));

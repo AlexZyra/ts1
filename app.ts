@@ -339,81 +339,151 @@
 // }
 
 
-interface IShape {
-  readonly name: string;
-  readonly color: string;
-  calculateArea(): number;
+// interface IShape {
+//   readonly name: string;
+//   readonly color: string;
+//   calculateArea(): number;
+// }
+
+// interface IRadios {
+//   readonly radius: number
+// }
+
+// interface IHeight {
+//   readonly height: number
+// }
+
+// interface IWidth {
+//   readonly width: number
+// }
+
+// interface IPrint {
+//   print(): void;
+// }
+
+// abstract class Shape implements IShape {
+//   abstract readonly name: string;
+//   abstract readonly color: string;
+
+//   abstract calculateArea(): number;
+// }
+
+// class Circle extends Shape implements IRadios {
+//   constructor(readonly name: string, readonly color: string, readonly radius: number) {
+//     super()
+//   }
+
+//   override calculateArea(): number {
+//     return Math.PI * this.radius ** 2;
+//   }
+// }
+
+// class Rectangle extends Shape implements IPrint, IHeight, IWidth {
+//   constructor(readonly name: string, readonly color: string, readonly width: number, readonly height: number) {
+//     super();
+//   }
+
+//   override calculateArea(): number {
+//     return this.width * this.height;
+//   }
+
+//   print() {
+//     console.log(`Area of ${this.name} = ${this.width} * ${this.height}`);
+//   }
+// }
+
+// class Square extends Shape implements IPrint, IWidth {
+//   constructor(readonly name: string, readonly color: string, readonly width: number) {
+//     super();
+//   }
+
+//   override calculateArea(): number {
+//     return this.width * this.width;
+//   }
+
+//   print() {
+//     console.log(`Area of ${this.name} = ${this.width} * ${this.width}`);
+//   }
+// }
+
+// class Triangle extends Shape implements IHeight, IWidth {
+//   constructor(readonly name: string, readonly color: string, readonly width: number, readonly height: number) {
+//     super();
+//   }
+
+//   override calculateArea(): number {
+//     return 0.5 * this.width * this.height;
+//   }
+// }
+
+interface IMyIndexSignature {
+  [key: string ]: number | string;
 }
 
-interface IRadios {
-  readonly radius: number
+const A: IMyIndexSignature = {
+  key: '2',
+  123: 45,
+  key1: 67
 }
 
-interface IHeight {
-  readonly height: number
+interface IFunctionIndex{
+  [key: string]: (...args: any[]) => any;
 }
 
-interface IWidth {
-  readonly width: number
+const B: IFunctionIndex = {
+  sum: (a,b) => a + b,
+  greet: (name) => `Hello, ${name}!`
 }
 
-interface IPrint {
-  print(): void;
+interface IArray {
+  [index: number]: string
+  length: number
 }
 
-abstract class Shape implements IShape {
-  abstract readonly name: string;
-  abstract readonly color: string;
-
-  abstract calculateArea(): number;
+const myArrayLikeObject: IArray = {
+  0: 'Its',
+  1: 'written',
+  2: 'on',
+  3: 'TypeScript',
+  length: 4
 }
 
-class Circle extends Shape implements IRadios {
-  constructor(readonly name: string, readonly color: string, readonly radius: number) {
-    super()
-  }
-
-  override calculateArea(): number {
-    return Math.PI * this.radius ** 2;
-  }
+interface IDynamicProperties {
+  name: string;
+  [key: string]: any
 }
 
-class Rectangle extends Shape implements IPrint, IHeight, IWidth {
-  constructor(readonly name: string, readonly color: string, readonly width: number, readonly height: number) {
-    super();
-  }
-
-  override calculateArea(): number {
-    return this.width * this.height;
-  }
-
-  print() {
-    console.log(`Area of ${this.name} = ${this.width} * ${this.height}`);
-  }
+const dude: IDynamicProperties = {
+  name: "Alex",
+  city: 'Dnipro',
+  course: 2,
+  learns: true
 }
 
-class Square extends Shape implements IPrint, IWidth {
-  constructor(readonly name: string, readonly color: string, readonly width: number) {
-    super();
-  }
-
-  override calculateArea(): number {
-    return this.width * this.width;
-  }
-
-  print() {
-    console.log(`Area of ${this.name} = ${this.width} * ${this.width}`);
-  }
+interface IIndexCreate {
+  [key: string]: any;
 }
 
-class Triangle extends Shape implements IHeight, IWidth {
-  constructor(readonly name: string, readonly color: string, readonly width: number, readonly height: number) {
-    super();
-  }
-
-  override calculateArea(): number {
-    return 0.5 * this.width * this.height;
-  }
+interface IIndexAdd extends IIndexCreate {
+  age: number
 }
 
+const person: IIndexAdd = {
+  name: "Alex",
+  age: 18
+}
 
+function areAllValuesNumbers(obj: { [key: string]: any }): boolean {
+  for (const key in obj) {
+    if (typeof obj[key] !== "number") {
+      return false;
+    }
+  }
+  return true;
+}
+
+const obj1 = { key1: 1, key2: 1.5, key3: "string" };
+const obj2 = { key1: 1, key2: 1.5, key3: 23521 };
+
+console.log(areAllValuesNumbers(obj1));
+console.log(areAllValuesNumbers(obj2));

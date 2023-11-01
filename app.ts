@@ -416,74 +416,172 @@
 //   }
 // }
 
-interface IMyIndexSignature {
-  [key: string ]: number | string;
+// interface IMyIndexSignature {
+//   [key: string ]: number | string;
+// }
+
+// const A: IMyIndexSignature = {
+//   key: '2',
+//   123: 45,
+//   key1: 67
+// }
+
+// interface IFunctionIndex{
+//   [key: string]: (...args: any[]) => any;
+// }
+
+// const B: IFunctionIndex = {
+//   sum: (a,b) => a + b,
+//   greet: (name) => `Hello, ${name}!`
+// }
+
+// interface IArray {
+//   [index: number]: string
+//   length: number
+// }
+
+// const myArrayLikeObject: IArray = {
+//   0: 'Its',
+//   1: 'written',
+//   2: 'on',
+//   3: 'TypeScript',
+//   length: 4
+// }
+
+// interface IDynamicProperties {
+//   name: string;
+//   [key: string]: any
+// }
+
+// const dude: IDynamicProperties = {
+//   name: "Alex",
+//   city: 'Dnipro',
+//   course: 2,
+//   learns: true
+// }
+
+// interface IIndexCreate {
+//   [key: string]: any;
+// }
+
+// interface IIndexAdd extends IIndexCreate {
+//   age: number
+// }
+
+// const person: IIndexAdd = {
+//   name: "Alex",
+//   age: 18
+// }
+
+// function areAllValuesNumbers(obj: { [key: string]: any }): boolean {
+//   for (const key in obj) {
+//     if (typeof obj[key] !== "number") {
+//       return false;
+//     }
+//   }
+//   return true;
+// }
+
+// const obj1 = { key1: 1, key2: 1.5, key3: "string" };
+// const obj2 = { key1: 1, key2: 1.5, key3: 23521 };
+
+// console.log(areAllValuesNumbers(obj1));
+// console.log(areAllValuesNumbers(obj2));
+
+
+
+type DeepReadonly<T> = {
+    readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+};
+
+interface MyObject {
+    a: number;
+    c: {
+        x: boolean;
+        y: number[];
+        z: null
+    };
 }
 
-const A: IMyIndexSignature = {
-  key: '2',
-  123: 45,
-  key1: 67
+const readOnlyObj: DeepReadonly<MyObject> = {
+    a: 123,
+    c: {
+        x: true,
+        y: [1, 2, 3],
+        z: null
+    },
+};
+
+
+type DeepRequireReadonly<T> = {
+    readonly [K in keyof T]-?: T[K] extends object ? DeepRequireReadonly<T[K]> : T[K];
+};
+
+const deepRequireOnlyObj: DeepRequireReadonly<MyObject> = {
+    a: 123,
+    c: {
+        x: true,
+        y: [1, 2, 3],
+        z: null
+    },
+};
+
+
+type UpperCaseKeys<T> = {
+    [K in keyof T as Uppercase<string & K>]: T[K];
+};
+
+interface MyObjectUC {
+    name: string;
+    age: number;
 }
 
-interface IFunctionIndex{
-  [key: string]: (...args: any[]) => any;
+type MyObjectUpperCase = UpperCaseKeys<MyObject>;
+
+
+enum MyEnum {
+    Key1,
+    Key2,
+    Key3,
 }
 
-const B: IFunctionIndex = {
-  sum: (a,b) => a + b,
-  greet: (name) => `Hello, ${name}!`
-}
+type EnumFunction<T extends Record<string, (...args: any) => any>> = {
+    [K in keyof T as `get-${string & K}`]: T[K];
+};
 
-interface IArray {
-  [index: number]: string
-  length: number
-}
+type EnumFunctions = EnumFunction<{
+    [MyEnum.Key1]: () => void;
+    [MyEnum.Key2]: () => string;
+    [MyEnum.Key3]: (param: number) => boolean;
+}>;
 
-const myArrayLikeObject: IArray = {
-  0: 'Its',
-  1: 'written',
-  2: 'on',
-  3: 'TypeScript',
-  length: 4
-}
 
-interface IDynamicProperties {
-  name: string;
-  [key: string]: any
-}
+type ObjectToPropertyDescriptor<T> = {
+    [K in keyof T]: PropertyDescriptor;
+};
 
-const dude: IDynamicProperties = {
-  name: "Alex",
-  city: 'Dnipro',
-  course: 2,
-  learns: true
-}
+const obj = {
+    property1: 42,
+    property2: 'Hello',
+};
 
-interface IIndexCreate {
-  [key: string]: any;
-}
-
-interface IIndexAdd extends IIndexCreate {
-  age: number
-}
-
-const person: IIndexAdd = {
-  name: "Alex",
-  age: 18
-}
-
-function areAllValuesNumbers(obj: { [key: string]: any }): boolean {
-  for (const key in obj) {
-    if (typeof obj[key] !== "number") {
-      return false;
+const propertyDescriptorObj: ObjectToPropertyDescriptor<typeof obj> = {
+    property1: {
+        value: 42,
+        writable: true
+    },
+    property2: {
+        value: 'Hello',
+        writable: true
     }
-  }
-  return true;
-}
+};
 
-const obj1 = { key1: 1, key2: 1.5, key3: "string" };
-const obj2 = { key1: 1, key2: 1.5, key3: 23521 };
 
-console.log(areAllValuesNumbers(obj1));
-console.log(areAllValuesNumbers(obj2));
+type ParamType<T> = T extends (infer U)[] ? U : T;
+
+function exampleFunction(param: ParamType<number[]>): void {}
+
+const param1: number = 17;
+// exampleFunction(param1)
+const param2: string = 'ts'
+// exampleFunction(param2)

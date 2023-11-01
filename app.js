@@ -1,41 +1,44 @@
 "use strict";
 // let firstWord: string = "Hello World on TS"
 // console.log(firstWord);
-const A = {
-    key: '2',
-    123: 45,
-    key1: 67
+const readOnlyObj = {
+    a: 123,
+    c: {
+        x: true,
+        y: [1, 2, 3],
+        z: null
+    },
 };
-const B = {
-    sum: (a, b) => a + b,
-    greet: (name) => `Hello, ${name}!`
+const deepRequireOnlyObj = {
+    a: 123,
+    c: {
+        x: true,
+        y: [1, 2, 3],
+        z: null
+    },
 };
-const myArrayLikeObject = {
-    0: 'Its',
-    1: 'written',
-    2: 'on',
-    3: 'TypeScript',
-    length: 4
+var MyEnum;
+(function (MyEnum) {
+    MyEnum[MyEnum["Key1"] = 0] = "Key1";
+    MyEnum[MyEnum["Key2"] = 1] = "Key2";
+    MyEnum[MyEnum["Key3"] = 2] = "Key3";
+})(MyEnum || (MyEnum = {}));
+const obj = {
+    property1: 42,
+    property2: 'Hello',
 };
-const dude = {
-    name: "Alex",
-    city: 'Dnipro',
-    course: 2,
-    learns: true
-};
-const person = {
-    name: "Alex",
-    age: 18
-};
-function areAllValuesNumbers(obj) {
-    for (const key in obj) {
-        if (typeof obj[key] !== "number") {
-            return false;
-        }
+const propertyDescriptorObj = {
+    property1: {
+        value: 42,
+        writable: true
+    },
+    property2: {
+        value: 'Hello',
+        writable: true
     }
-    return true;
-}
-const obj1 = { key1: 1, key2: 1.5, key3: "string" };
-const obj2 = { key1: 1, key2: 1.5, key3: 23521 };
-console.log(areAllValuesNumbers(obj1));
-console.log(areAllValuesNumbers(obj2));
+};
+function exampleFunction(param) { }
+const param1 = 17;
+// exampleFunction(param1)
+const param2 = 'ts';
+// exampleFunction(param2)

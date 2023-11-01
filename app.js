@@ -38,7 +38,4 @@ const propertyDescriptorObj = {
     }
 };
 function exampleFunction(param) { }
-const param1 = 17;
-// exampleFunction(param1)
-const param2 = 'ts';
-// exampleFunction(param2)
+let a = [17];

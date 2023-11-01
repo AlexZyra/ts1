@@ -37,5 +37,7 @@ const propertyDescriptorObj = {
         writable: true
     }
 };
-function exampleFunction(param) { }
-let a = [17];
+function f1(param) { }
+function f2(param) { }
+let a1;
+let a2;

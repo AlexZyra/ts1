@@ -577,8 +577,12 @@ const propertyDescriptorObj: ObjectToPropertyDescriptor<typeof obj> = {
 };
 
 
-type ParamType<T> = T extends (param: infer P) => any ? P : never;
+type ParamType<T> = T extends (param: infer P) => void ? (P extends Array<infer U> ? U : P) : never;
 
-function exampleFunction(param: number[]): void {}
+function f1(param: number): void {}
 
-let a: ParamType<typeof exampleFunction> = [17];
+function f2(param: number[]): void {}
+
+let a1: ParamType<typeof f1>;
+
+let a2: ParamType<typeof f2>;

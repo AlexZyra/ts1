@@ -490,99 +490,175 @@
 
 
 
-type DeepReadonly<T> = {
-    readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
-};
+// type DeepReadonly<T> = {
+//     readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+// };
 
-interface MyObject {
-    a: number;
-    c: {
-        x: boolean;
-        y: number[];
-        z: null
-    };
+// interface MyObject {
+//     a: number;
+//     c: {
+//         x: boolean;
+//         y: number[];
+//         z: null
+//     };
+// }
+
+// const readOnlyObj: DeepReadonly<MyObject> = {
+//     a: 123,
+//     c: {
+//         x: true,
+//         y: [1, 2, 3],
+//         z: null
+//     },
+// };
+
+
+// type DeepRequireReadonly<T> = {
+//     readonly [K in keyof T]-?: T[K] extends object ? DeepRequireReadonly<T[K]> : T[K];
+// };
+
+// const deepRequireOnlyObj: DeepRequireReadonly<MyObject> = {
+//     a: 123,
+//     c: {
+//         x: true,
+//         y: [1, 2, 3],
+//         z: null
+//     },
+// };
+
+
+// type UpperCaseKeys<T> = {
+//     [K in keyof T as Uppercase<string & K>]: T[K];
+// };
+
+// interface MyObjectUC {
+//     name: string;
+//     age: number;
+// }
+
+// type MyObjectUpperCase = UpperCaseKeys<MyObject>;
+
+
+// enum MyEnum {
+//     Key1,
+//     Key2,
+//     Key3,
+// }
+
+// type EnumFunction<T extends Record<string, (...args: any) => any>> = {
+//     [K in keyof T as `get-${string & K}`]: T[K];
+// };
+
+// type EnumFunctions = EnumFunction<{
+//     [MyEnum.Key1]: () => void;
+//     [MyEnum.Key2]: () => string;
+//     [MyEnum.Key3]: (param: number) => boolean;
+// }>;
+
+
+// type ObjectToPropertyDescriptor<T> = {
+//     [K in keyof T]: PropertyDescriptor;
+// };
+
+// const obj = {
+//     property1: 42,
+//     property2: 'Hello',
+// };
+
+// const propertyDescriptorObj: ObjectToPropertyDescriptor<typeof obj> = {
+//     property1: {
+//         value: 42,
+//         writable: true
+//     },
+//     property2: {
+//         value: 'Hello',
+//         writable: true
+//     }
+// };
+
+
+// type ParamType<T> = T extends (param: infer P) => void ? (P extends Array<infer U> ? U : P) : never;
+
+// function f1(param: number): void {}
+
+// function f2(param: number[]): void {}
+
+// let a1: ParamType<typeof f1>;
+
+// let a2: ParamType<typeof f2>;
+
+
+interface Film {
+    title: string;
+    releaseYear: number;
+    rating: number;
+    awards: string[];
 }
 
-const readOnlyObj: DeepReadonly<MyObject> = {
-    a: 123,
-    c: {
-        x: true,
-        y: [1, 2, 3],
-        z: null
-    },
-};
-
-
-type DeepRequireReadonly<T> = {
-    readonly [K in keyof T]-?: T[K] extends object ? DeepRequireReadonly<T[K]> : T[K];
-};
-
-const deepRequireOnlyObj: DeepRequireReadonly<MyObject> = {
-    a: 123,
-    c: {
-        x: true,
-        y: [1, 2, 3],
-        z: null
-    },
-};
-
-
-type UpperCaseKeys<T> = {
-    [K in keyof T as Uppercase<string & K>]: T[K];
-};
-
-interface MyObjectUC {
+interface FilmCategory {
     name: string;
-    age: number;
+    films: Film[];
 }
 
-type MyObjectUpperCase = UpperCaseKeys<MyObject>;
-
-
-enum MyEnum {
-    Key1,
-    Key2,
-    Key3,
+interface Filters {
+    titleFilter?: { filter: string };
+    ratingFilter?: { filter: number; filterTo: number };
+    releaseYearFilter?: { filter: number; filterTo: number };
+    awardsFilter?: { values: string[] };
 }
 
-type EnumFunction<T extends Record<string, (...args: any) => any>> = {
-    [K in keyof T as `get-${string & K}`]: T[K];
-};
+class FilmList {
+    films: Film[];
+    filters: Filters;
 
-type EnumFunctions = EnumFunction<{
-    [MyEnum.Key1]: () => void;
-    [MyEnum.Key2]: () => string;
-    [MyEnum.Key3]: (param: number) => boolean;
-}>;
-
-
-type ObjectToPropertyDescriptor<T> = {
-    [K in keyof T]: PropertyDescriptor;
-};
-
-const obj = {
-    property1: 42,
-    property2: 'Hello',
-};
-
-const propertyDescriptorObj: ObjectToPropertyDescriptor<typeof obj> = {
-    property1: {
-        value: 42,
-        writable: true
-    },
-    property2: {
-        value: 'Hello',
-        writable: true
+    constructor(films: Film[]) {
+        this.films = films;
+        this.filters = {};
     }
-};
 
+    applyFilters(filters: Filters) {
+        this.filters = filters;
+        this.films = this.films.filter(
+            (film) =>
+                !filters.ratingFilter ||
+                (film.rating >= filters.ratingFilter.filter &&
+                    film.rating <= filters.ratingFilter.filterTo)
+        );
+    }
 
-type ParamType<T> = T extends (param: infer P) => void ? (P extends Array<infer U> ? U : P) : never;
+    applySearchValue(searchValue: string) {
+        this.films = this.films.filter((film) =>
+            film.title.toLowerCase().includes(searchValue.toLowerCase())
+        );
+    }
+}
 
-function f1(param: number): void {}
+class CategoryList {
+    categories: FilmCategory[];
+    filters: Filters;
 
-function f2(param: number[]): void {}
+    constructor(categories: FilmCategory[]) {
+        this.categories = categories;
+        this.filters = {};
+    }
 
-let a1: ParamType<typeof f1>;
+    applyFilters(filters: Filters) {
+        this.filters = filters;
+        this.categories.forEach((category) => {
+            category.films = category.films.filter(
+                (film) =>
+                    (filters.ratingFilter?.filter ?? film.rating) <= film.rating &&
+                    film.rating <= (filters.ratingFilter?.filterTo ?? film.rating)
+            );
+        });
+    }
 
-let a2: ParamType<typeof f2>;
+    applySearchValue(searchValue: string) {
+        this.categories.forEach((category) => {
+            category.films = category.films.filter((film) =>
+                film.title.toLowerCase().includes(searchValue.toLowerCase())
+            );
+        });
+    }
+}
+

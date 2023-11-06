@@ -600,65 +600,86 @@ interface FilmCategory {
     films: Film[];
 }
 
-interface Filters {
-    titleFilter?: { filter: string };
-    ratingFilter?: { filter: number; filterTo: number };
-    releaseYearFilter?: { filter: number; filterTo: number };
-    awardsFilter?: { values: string[] };
+interface Filter<T> {
+    filter: T;
 }
 
-class FilmList {
-    films: Film[];
+interface RangeFilter<T> {
+    filter: T;
+    filterTo: T;
+}
+
+interface ValueFilter<T> {
+    values: T[];
+}
+
+interface Filters {
+    titleFilter?: Filter<string>;
+    ratingFilter?: RangeFilter<number>;
+    releaseYearFilter?: RangeFilter<number>;
+    awardsFilter?: ValueFilter<string[]>;
+}
+
+interface List<T> {
+    items: T[];
+    filters: Filters;
+    applyFilters(filters: Filters): void;
+    applySearchValue(searchValue: string): void;
+}
+
+class FilmList implements List<Film> {
+    items: Film[];
     filters: Filters;
 
     constructor(films: Film[]) {
-        this.films = films;
+        this.items = films;
         this.filters = {};
     }
 
     applyFilters(filters: Filters) {
         this.filters = filters;
-        this.films = this.films.filter(
-            (film) =>
-                !filters.ratingFilter ||
-                (film.rating >= filters.ratingFilter.filter &&
-                    film.rating <= filters.ratingFilter.filterTo)
+        this.items = this.items.filter((film) =>
+            (!filters.ratingFilter ||
+                (film.rating >= filters.ratingFilter.filter && film.rating <= filters.ratingFilter.filterTo))
+            && (!filters.titleFilter || film.title.toLowerCase().includes(filters.titleFilter.filter.toLowerCase()))
         );
     }
 
     applySearchValue(searchValue: string) {
-        this.films = this.films.filter((film) =>
+        this.items = this.items.filter((film) =>
             film.title.toLowerCase().includes(searchValue.toLowerCase())
         );
     }
 }
 
-class CategoryList {
-    categories: FilmCategory[];
+class CategoryList implements List<FilmCategory> {
+    items: FilmCategory[];
     filters: Filters;
 
     constructor(categories: FilmCategory[]) {
-        this.categories = categories;
+        this.items = categories;
         this.filters = {};
     }
 
     applyFilters(filters: Filters) {
         this.filters = filters;
-        this.categories.forEach((category) => {
-            category.films = category.films.filter(
-                (film) =>
-                    (filters.ratingFilter?.filter ?? film.rating) <= film.rating &&
-                    film.rating <= (filters.ratingFilter?.filterTo ?? film.rating)
+        this.items.forEach((category) => {
+            category.films = category.films.filter((film) =>
+                (!filters.ratingFilter ||
+                    (filters.ratingFilter.filter <= film.rating && film.rating <= filters.ratingFilter.filterTo))
+                && (!filters.titleFilter || film.title.toLowerCase().includes(filters.titleFilter.filter.toLowerCase()))
             );
         });
     }
 
     applySearchValue(searchValue: string) {
-        this.categories.forEach((category) => {
+        this.items.forEach((category) => {
             category.films = category.films.filter((film) =>
                 film.title.toLowerCase().includes(searchValue.toLowerCase())
             );
         });
     }
 }
+
+
 

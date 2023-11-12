@@ -588,98 +588,153 @@
 // let a2: ParamType<typeof f2>;
 
 
-interface Film {
-    title: string;
-    releaseYear: number;
-    rating: number;
-    awards: string[];
+// interface Film {
+//     title: string;
+//     releaseYear: number;
+//     rating: number;
+//     awards: string[];
+// }
+
+// interface FilmCategory {
+//     name: string;
+//     films: Film[];
+// }
+
+// interface Filter<T> {
+//     filter: T;
+// }
+
+// interface RangeFilter<T> {
+//     filter: T;
+//     filterTo: T;
+// }
+
+// interface ValueFilter<T> {
+//     values: T[];
+// }
+
+// interface Filters {
+//     titleFilter?: Filter<string>;
+//     ratingFilter?: RangeFilter<number>;
+//     releaseYearFilter?: RangeFilter<number>;
+//     awardsFilter?: ValueFilter<string[]>;
+// }
+
+// interface List<T> {
+//     items: T[];
+//     filters: Filters;
+//     applyFilters(filters: Filters): void;
+//     applySearchValue(searchValue: string): void;
+// }
+
+// class FilmList implements List<Film> {
+//     items: Film[];
+//     filters: Filters;
+
+//     constructor(films: Film[]) {
+//         this.items = films;
+//         this.filters = {};
+//     }
+
+//     applyFilters(filters: Filters) {
+//         this.filters = filters;
+//         this.items = this.items.filter((film) =>
+//             (!filters.ratingFilter ||
+//                 (film.rating >= filters.ratingFilter.filter && film.rating <= filters.ratingFilter.filterTo))
+//             && (!filters.titleFilter || film.title.toLowerCase().includes(filters.titleFilter.filter.toLowerCase()))
+//         );
+//     }
+
+//     applySearchValue(searchValue: string) {
+//         this.items = this.items.filter((film) =>
+//             film.title.toLowerCase().includes(searchValue.toLowerCase())
+//         );
+//     }
+// }
+
+// class CategoryList implements List<FilmCategory> {
+//     items: FilmCategory[];
+//     filters: Filters;
+
+//     constructor(categories: FilmCategory[]) {
+//         this.items = categories;
+//         this.filters = {};
+//     }
+
+//     applyFilters(filters: Filters) {
+//         this.filters = filters;
+//         this.items.forEach((category) => {
+//             category.films = category.films.filter((film) =>
+//                 (!filters.ratingFilter ||
+//                     (filters.ratingFilter.filter <= film.rating && film.rating <= filters.ratingFilter.filterTo))
+//                 && (!filters.titleFilter || film.title.toLowerCase().includes(filters.titleFilter.filter.toLowerCase()))
+//             );
+//         });
+//     }
+
+//     applySearchValue(searchValue: string) {
+//         this.items.forEach((category) => {
+//             category.films = category.films.filter((film) =>
+//                 film.title.toLowerCase().includes(searchValue.toLowerCase())
+//             );
+//         });
+//     }
+// }
+
+const memoizeMap = new Map<string, any>();
+
+function Memoize(key: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value!;
+
+    descriptor.value = function (this: any, ...args: any[]) {
+        const memoizeKey = `${key}_${JSON.stringify(args)}`;
+
+        if (memoizeMap.has(memoizeKey)) {
+            console.log('Memoized result retrieved:', memoizeMap.get(memoizeKey));
+        } else {
+            const result = originalMethod.apply(this, args);
+            memoizeMap.set(memoizeKey, result);
+            console.log('Method executed:', result);
+        }
+    };
+
+    return descriptor;
 }
 
-interface FilmCategory {
-    name: string;
-    films: Film[];
-}
-
-interface Filter<T> {
-    filter: T;
-}
-
-interface RangeFilter<T> {
-    filter: T;
-    filterTo: T;
-}
-
-interface ValueFilter<T> {
-    values: T[];
-}
-
-interface Filters {
-    titleFilter?: Filter<string>;
-    ratingFilter?: RangeFilter<number>;
-    releaseYearFilter?: RangeFilter<number>;
-    awardsFilter?: ValueFilter<string[]>;
-}
-
-interface List<T> {
-    items: T[];
-    filters: Filters;
-    applyFilters(filters: Filters): void;
-    applySearchValue(searchValue: string): void;
-}
-
-class FilmList implements List<Film> {
-    items: Film[];
-    filters: Filters;
-
-    constructor(films: Film[]) {
-        this.items = films;
-        this.filters = {};
+class MemoizeClass {
+    @Memoize
+    calculate(arg1: number, arg2: string): string {
+        return `Result: ${arg1} - ${arg2}`;
     }
-
-    applyFilters(filters: Filters) {
-        this.filters = filters;
-        this.items = this.items.filter((film) =>
-            (!filters.ratingFilter ||
-                (film.rating >= filters.ratingFilter.filter && film.rating <= filters.ratingFilter.filterTo))
-            && (!filters.titleFilter || film.title.toLowerCase().includes(filters.titleFilter.filter.toLowerCase()))
-        );
-    }
-
-    applySearchValue(searchValue: string) {
-        this.items = this.items.filter((film) =>
-            film.title.toLowerCase().includes(searchValue.toLowerCase())
-        );
-    }
 }
 
-class CategoryList implements List<FilmCategory> {
-    items: FilmCategory[];
-    filters: Filters;
+const instanceMemoize = new MemoizeClass();
 
-    constructor(categories: FilmCategory[]) {
-        this.items = categories;
-        this.filters = {};
+function Debounce(wait: number) {
+    return function (_target: any, _key: string, descriptor: PropertyDescriptor) {
+      const originalMethod = descriptor.value!;
+      let timeout: number | undefined;
+  
+      descriptor.value = function (this: any, ...args: any[]) {
+        if (timeout !== undefined) {
+          clearTimeout(timeout);
+        }
+  
+        timeout = window.setTimeout(() => {
+          originalMethod.apply(this, args);
+        }, wait);
+      };
+  
+      return descriptor;
+    };
+  }
+  
+  class DebounceClass {
+    @Debounce(500)
+    methodWithDebounce(arg: string) {
+      console.log(`Method executed with argument: ${arg}`);
     }
-
-    applyFilters(filters: Filters) {
-        this.filters = filters;
-        this.items.forEach((category) => {
-            category.films = category.films.filter((film) =>
-                (!filters.ratingFilter ||
-                    (filters.ratingFilter.filter <= film.rating && film.rating <= filters.ratingFilter.filterTo))
-                && (!filters.titleFilter || film.title.toLowerCase().includes(filters.titleFilter.filter.toLowerCase()))
-            );
-        });
-    }
-
-    applySearchValue(searchValue: string) {
-        this.items.forEach((category) => {
-            category.films = category.films.filter((film) =>
-                film.title.toLowerCase().includes(searchValue.toLowerCase())
-            );
-        });
-    }
-}
-
-
-
+  }
+  
+  const instanceDebounce = new DebounceClass();
+  

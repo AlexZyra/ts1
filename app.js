@@ -1,91 +1,99 @@
 "use strict";
 // let firstWord: string = "Hello World on TS"
 // console.log(firstWord);
-class TodoListImplementation {
+var TodoType;
+(function (TodoType) {
+    TodoType["Default"] = "default";
+    TodoType["RequireConfirmation"] = "requireConfirmation";
+})(TodoType || (TodoType = {}));
+class TodoList {
     constructor() {
-        this.notes = [];
+        this.todos = [];
     }
-    addNote(title, content, requireConfirmation = false) {
+    addTodo(title, content, todoType = TodoType.Default) {
         if (title.trim() === '' || content.trim() === '') {
             console.error('Title and content cannot be empty.');
             return;
         }
-        const newNote = {
-            id: this.notes.length + 1,
+        const newTodo = {
+            id: this.todos.length + 1,
             title,
             content,
             createdDate: new Date(),
             editedDate: new Date(),
-            status: false,
-            requireConfirmation,
+            isDone: false,
+            todoType,
         };
-        this.notes.push(newNote);
+        this.todos.push(newTodo);
     }
-    removeNote(id) {
-        this.notes = this.notes.filter((note) => note.id !== id);
+    removeTodo(id) {
+        this.todos = this.todos.filter((todo) => todo.id !== id);
     }
-    editNote(id, title, content) {
-        const noteIndex = this.findNoteIndexById(id);
-        if (noteIndex !== -1) {
-            this.notes[noteIndex].title = title;
-            this.notes[noteIndex].content = content;
-            this.notes[noteIndex].editedDate = new Date();
-            if (this.notes[noteIndex].requireConfirmation) {
-                this.notes[noteIndex].status = false;
+    editTodo(id, title, content) {
+        const todoIndex = this.findTodoIndexById(id);
+        if (todoIndex !== -1) {
+            this.todos[todoIndex].title = title;
+            this.todos[todoIndex].content = content;
+            this.todos[todoIndex].editedDate = new Date();
+            if (this.todos[todoIndex].todoType === TodoType.RequireConfirmation) {
+                this.todos[todoIndex].isDone = false; // Reset status for confirmed todos
             }
         }
         else {
-            console.error('Note not found.');
+            console.error('Todo not found.');
         }
     }
     markAsDone(id) {
-        const noteIndex = this.findNoteIndexById(id);
-        if (noteIndex !== -1) {
-            this.notes[noteIndex].status = true;
+        const todoIndex = this.findTodoIndexById(id);
+        if (todoIndex !== -1) {
+            this.todos[todoIndex].isDone = true;
         }
         else {
-            console.error('Note not found.');
+            console.error('Todo not found.');
         }
     }
-    getNoteById(id) {
-        return this.notes.find((note) => note.id === id);
+    getTodoById(id) {
+        return this.todos.find((todo) => todo.id === id);
     }
-    getAllNotes() {
-        return this.notes;
+    getAllTodos() {
+        return this.todos;
     }
-    getUnfinishedNotesCount() {
-        return this.notes.filter((note) => !note.status).length;
+    getUnfinishedTodosCount() {
+        return this.todos.filter((todo) => !todo.isDone).length;
     }
-    getFinishedNotesCount() {
-        return this.notes.filter((note) => note.status).length;
+    getFinishedTodosCount() {
+        return this.todos.filter((todo) => todo.isDone).length;
     }
-    searchNotes(query) {
+    searchTodos(query) {
         const lowerCaseQuery = query.toLowerCase();
-        return this.notes.filter((note) => note.title.toLowerCase().includes(lowerCaseQuery) ||
-            note.content.toLowerCase().includes(lowerCaseQuery));
+        return this.todos.filter((todo) => todo.title.toLowerCase().includes(lowerCaseQuery) ||
+            todo.content.toLowerCase().includes(lowerCaseQuery));
     }
     sortByStatus() {
-        this.notes.sort((a, b) => (a.status === b.status ? 0 : a.status ? 1 : -1));
+        this.todos.sort((a, b) => (a.isDone === b.isDone ? 0 : a.isDone ? 1 : -1));
     }
     sortByCreationDate() {
-        this.notes.sort((a, b) => a.createdDate.getTime() - b.createdDate.getTime());
+        this.todos.sort((a, b) => a.createdDate.getTime() - b.createdDate.getTime());
     }
-    findNoteIndexById(id) {
-        return this.notes.findIndex((note) => note.id === id);
+    findTodoIndexById(id) {
+        return this.todos.findIndex((todo) => todo.id === id);
     }
 }
-const todoList = new TodoListImplementation();
 // example of use
-todoList.addNote('Task1', 'Content1');
-todoList.addNote('Task2', 'Content2', true);
-todoList.editNote(1, 'Task 1 Updated', 'Updated Content 1');
+const todoList = new TodoList();
+todoList.addTodo('Task 1', 'Content 1');
+todoList.addTodo('Task 2', 'Content 2', TodoType.RequireConfirmation);
+todoList.editTodo(1, 'Task 1 Updated', 'Updated Content 1');
 todoList.markAsDone(1);
-todoList.removeNote(2);
-const allNotes = todoList.getAllNotes();
-console.log(allNotes);
-const unfinishedCount = todoList.getUnfinishedNotesCount();
-const finishedCount = todoList.getFinishedNotesCount();
-console.log(`Unfinished Notes: ${unfinishedCount}, Finished Notes: ${finishedCount}`);
-const searchResults = todoList.searchNotes('Updated');
+todoList.removeTodo(2);
+const allTodos = todoList.getAllTodos();
+console.log(allTodos);
+const unfinishedCount = todoList.getUnfinishedTodosCount();
+const finishedCount = todoList.getFinishedTodosCount();
+console.log(`Unfinished Todos: ${unfinishedCount}, Finished Todos: ${finishedCount}`);
+const searchResults = todoList.searchTodos('Updated');
 console.log('Search Results:', searchResults);
-todoList;
+todoList.sortByStatus();
+console.log('Sorted by Status:', todoList.getAllTodos());
+todoList.sortByCreationDate();
+console.log('Sorted by Creation Date:', todoList.getAllTodos());

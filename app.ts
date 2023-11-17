@@ -738,147 +738,130 @@
 
 //   const instanceDebounce = new DebounceClass();
 
-interface INote {
+interface Todo {
     id: number;
     title: string;
     content: string;
     createdDate: Date;
     editedDate: Date;
-    status: boolean;
-    requireConfirmation: boolean;
+    isDone: boolean;
+    todoType: TodoType;
 }
 
-interface DefaultNote extends INote {
-    requireConfirmation: false;
+enum TodoType {
+    Default = 'default',
+    RequireConfirmation = 'requireConfirmation',
 }
 
-interface ConfirmedNote extends INote {
-    requireConfirmation: true;
-}
-
-type NoteType = DefaultNote | ConfirmedNote;
-
-interface ITodoList {
-    addNote(title: string, content: string, requireConfirmation?: boolean): void;
-    removeNote(id: number): void;
-    editNote(id: number, title: string, content: string): void;
-    markAsDone(id: number): void;
-    getNoteById(id: number): NoteType | undefined;
-    getAllNotes(): NoteType[];
-    getUnfinishedNotesCount(): number;
-    getFinishedNotesCount(): number;
-    searchNotes(query: string): NoteType[];
-    sortByStatus(): void;
-    sortByCreationDate(): void;
-}
-
-class TodoListImplementation implements ITodoList {
-    private notes: NoteType[];
+class TodoList {
+    private todos: Todo[];
 
     constructor() {
-        this.notes = [];
+        this.todos = [];
     }
 
-    addNote(title: string, content: string, requireConfirmation: boolean = false): void {
+    addTodo(title: string, content: string, todoType: TodoType = TodoType.Default): void {
         if (title.trim() === '' || content.trim() === '') {
             console.error('Title and content cannot be empty.');
             return;
         }
 
-        const newNote: NoteType = {
-            id: this.notes.length + 1,
+        const newTodo: Todo = {
+            id: this.todos.length + 1,
             title,
             content,
             createdDate: new Date(),
             editedDate: new Date(),
-            status: false,
-            requireConfirmation,
+            isDone: false,
+            todoType,
         };
 
-        this.notes.push(newNote);
+        this.todos.push(newTodo);
     }
 
-    removeNote(id: number): void {
-        this.notes = this.notes.filter((note) => note.id !== id);
+    removeTodo(id: number): void {
+        this.todos = this.todos.filter((todo) => todo.id !== id);
     }
 
-    editNote(id: number, title: string, content: string): void {
-        const noteIndex = this.findNoteIndexById(id);
-        if (noteIndex !== -1) {
-            this.notes[noteIndex].title = title;
-            this.notes[noteIndex].content = content;
-            this.notes[noteIndex].editedDate = new Date();
-            if (this.notes[noteIndex].requireConfirmation) {
-                this.notes[noteIndex].status = false;
+    editTodo(id: number, title: string, content: string): void {
+        const todoIndex = this.findTodoIndexById(id);
+        if (todoIndex !== -1) {
+            this.todos[todoIndex].title = title;
+            this.todos[todoIndex].content = content;
+            this.todos[todoIndex].editedDate = new Date();
+            if (this.todos[todoIndex].todoType === TodoType.RequireConfirmation) {
+                this.todos[todoIndex].isDone = false; // Reset status for confirmed todos
             }
         } else {
-            console.error('Note not found.');
+            console.error('Todo not found.');
         }
     }
 
     markAsDone(id: number): void {
-        const noteIndex = this.findNoteIndexById(id);
-        if (noteIndex !== -1) {
-            this.notes[noteIndex].status = true;
+        const todoIndex = this.findTodoIndexById(id);
+        if (todoIndex !== -1) {
+            this.todos[todoIndex].isDone = true;
         } else {
-            console.error('Note not found.');
+            console.error('Todo not found.');
         }
     }
 
-    getNoteById(id: number): NoteType | undefined {
-        return this.notes.find((note) => note.id === id);
+    getTodoById(id: number): Todo | undefined {
+        return this.todos.find((todo) => todo.id === id);
     }
 
-    getAllNotes(): NoteType[] {
-        return this.notes;
+    getAllTodos(): Todo[] {
+        return this.todos;
     }
 
-    getUnfinishedNotesCount(): number {
-        return this.notes.filter((note) => !note.status).length;
+    getUnfinishedTodosCount(): number {
+        return this.todos.filter((todo) => !todo.isDone).length;
     }
 
-    getFinishedNotesCount(): number {
-        return this.notes.filter((note) => note.status).length;
+    getFinishedTodosCount(): number {
+        return this.todos.filter((todo) => todo.isDone).length;
     }
 
-    searchNotes(query: string): NoteType[] {
+    searchTodos(query: string): Todo[] {
         const lowerCaseQuery = query.toLowerCase();
-        return this.notes.filter(
-            (note) =>
-                note.title.toLowerCase().includes(lowerCaseQuery) ||
-                note.content.toLowerCase().includes(lowerCaseQuery)
+        return this.todos.filter(
+            (todo) =>
+                todo.title.toLowerCase().includes(lowerCaseQuery) ||
+                todo.content.toLowerCase().includes(lowerCaseQuery)
         );
     }
 
     sortByStatus(): void {
-        this.notes.sort((a, b) => (a.status === b.status ? 0 : a.status ? 1 : -1));
+        this.todos.sort((a, b) => (a.isDone === b.isDone ? 0 : a.isDone ? 1 : -1));
     }
 
     sortByCreationDate(): void {
-        this.notes.sort((a, b) => a.createdDate.getTime() - b.createdDate.getTime());
+        this.todos.sort((a, b) => a.createdDate.getTime() - b.createdDate.getTime());
     }
 
-    private findNoteIndexById(id: number): number {
-        return this.notes.findIndex((note) => note.id === id);
+    private findTodoIndexById(id: number): number {
+        return this.todos.findIndex((todo) => todo.id === id);
     }
 }
 
-const todoList = new TodoListImplementation();
-
 // example of use
 
-todoList.addNote('Task1', 'Content1');
-todoList.addNote('Task2', 'Content2', true);
-todoList.editNote(1, 'Task 1 Updated', 'Updated Content 1');
+const todoList = new TodoList();
+todoList.addTodo('Task 1', 'Content 1');
+todoList.addTodo('Task 2', 'Content 2', TodoType.RequireConfirmation);
+todoList.editTodo(1, 'Task 1 Updated', 'Updated Content 1');
 todoList.markAsDone(1);
-todoList.removeNote(2);
-const allNotes = todoList.getAllNotes();
-console.log(allNotes);
-const unfinishedCount = todoList.getUnfinishedNotesCount();
-const finishedCount = todoList.getFinishedNotesCount();
-console.log(`Unfinished Notes: ${unfinishedCount}, Finished Notes: ${finishedCount}`);
-const searchResults = todoList.searchNotes('Updated');
+todoList.removeTodo(2);
+const allTodos = todoList.getAllTodos();
+console.log(allTodos);
+const unfinishedCount = todoList.getUnfinishedTodosCount();
+const finishedCount = todoList.getFinishedTodosCount();
+console.log(`Unfinished Todos: ${unfinishedCount}, Finished Todos: ${finishedCount}`);
+const searchResults = todoList.searchTodos('Updated');
 console.log('Search Results:', searchResults);
-todoList
+todoList.sortByStatus();
+console.log('Sorted by Status:', todoList.getAllTodos());
+todoList.sortByCreationDate();
+console.log('Sorted by Creation Date:', todoList.getAllTodos());
 
 

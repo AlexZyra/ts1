@@ -1,14 +1,14 @@
 "use strict";
 // let firstWord: string = "Hello World on TS"
 // console.log(firstWord);
-class Square {
-    draw() {
-        console.log("Drawing a square");
-    }
-}
 class Circle {
     draw() {
         console.log("Drawing a circle");
+    }
+}
+class Rectangle {
+    draw() {
+        console.log("Drawing a rectangle");
     }
 }
 class Triangle {
@@ -16,14 +16,39 @@ class Triangle {
         console.log("Drawing a triangle");
     }
 }
-const square = new Square();
-square.draw();
-const circle = new Circle();
-circle.draw();
-const triangle = new Triangle();
-triangle.draw();
-const shapes = [square, circle, triangle];
-shapes.forEach((shape) => shape.draw());
+class Ellipse {
+    draw() {
+        console.log("Drawing an ellipse");
+    }
+}
+class GraphicEditor {
+    drawShape(Draw) {
+        const shape = Draw.createShape();
+        shape.draw();
+    }
+}
+class CircleDraw {
+    createShape() {
+        return new Circle();
+    }
+}
+class RectangleDraw {
+    createShape() {
+        return new Rectangle();
+    }
+}
+class TriangleDraw {
+    createShape() {
+        return new Triangle();
+    }
+}
+class EllipseDraw {
+    createShape() {
+        return new Ellipse();
+    }
+}
+const graphicEditor = new GraphicEditor();
+graphicEditor.drawShape(new EllipseDraw());
 class User {
     constructor(name) {
         this.name = name;

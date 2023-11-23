@@ -738,130 +738,373 @@
 
 //   const instanceDebounce = new DebounceClass();
 
-interface Todo {
-    id: number;
-    title: string;
-    content: string;
-    createdDate: Date;
-    editedDate: Date;
-    isDone: boolean;
-    todoType: TodoType;
+// interface Todo {
+//     id: number;
+//     title: string;
+//     content: string;
+//     createdDate: Date;
+//     editedDate: Date;
+//     isDone: boolean;
+//     todoType: TodoType;
+// }
+
+// enum TodoType {
+//     Default = 'default',
+//     RequireConfirmation = 'requireConfirmation',
+// }
+
+// class TodoList {
+//     private todos: Todo[];
+
+//     constructor() {
+//         this.todos = [];
+//     }
+
+//     addTodo(title: string, content: string, todoType: TodoType = TodoType.Default): void {
+//         if (title.trim() === '' || content.trim() === '') {
+//             console.error('Title and content cannot be empty.');
+//             return;
+//         }
+
+//         const newTodo: Todo = {
+//             id: this.todos.length + 1,
+//             title,
+//             content,
+//             createdDate: new Date(),
+//             editedDate: new Date(),
+//             isDone: false,
+//             todoType,
+//         };
+
+//         this.todos.push(newTodo);
+//     }
+
+//     removeTodo(id: number): void {
+//         this.todos = this.todos.filter((todo) => todo.id !== id);
+//     }
+
+//     editTodo(id: number, title: string, content: string): void {
+//         const todoIndex = this.findTodoIndexById(id);
+//         if (todoIndex !== -1) {
+//             this.todos[todoIndex].title = title;
+//             this.todos[todoIndex].content = content;
+//             this.todos[todoIndex].editedDate = new Date();
+//             if (this.todos[todoIndex].todoType === TodoType.RequireConfirmation) {
+//                 this.todos[todoIndex].isDone = false; // Reset status for confirmed todos
+//             }
+//         } else {
+//             console.error('Todo not found.');
+//         }
+//     }
+
+//     markAsDone(id: number): void {
+//         const todoIndex = this.findTodoIndexById(id);
+//         if (todoIndex !== -1) {
+//             this.todos[todoIndex].isDone = true;
+//         } else {
+//             console.error('Todo not found.');
+//         }
+//     }
+
+//     getTodoById(id: number): Todo | undefined {
+//         return this.todos.find((todo) => todo.id === id);
+//     }
+
+//     getAllTodos(): Todo[] {
+//         return this.todos;
+//     }
+
+//     getUnfinishedTodosCount(): number {
+//         return this.todos.filter((todo) => !todo.isDone).length;
+//     }
+
+//     getFinishedTodosCount(): number {
+//         return this.todos.filter((todo) => todo.isDone).length;
+//     }
+
+//     searchTodos(query: string): Todo[] {
+//         const lowerCaseQuery = query.toLowerCase();
+//         return this.todos.filter(
+//             (todo) =>
+//                 todo.title.toLowerCase().includes(lowerCaseQuery) ||
+//                 todo.content.toLowerCase().includes(lowerCaseQuery)
+//         );
+//     }
+
+//     sortByStatus(): void {
+//         this.todos.sort((a, b) => (a.isDone === b.isDone ? 0 : a.isDone ? 1 : -1));
+//     }
+
+//     sortByCreationDate(): void {
+//         this.todos.sort((a, b) => a.createdDate.getTime() - b.createdDate.getTime());
+//     }
+
+//     private findTodoIndexById(id: number): number {
+//         return this.todos.findIndex((todo) => todo.id === id);
+//     }
+// }
+
+// // example of use
+
+// const todoList = new TodoList();
+// todoList.addTodo('Task 1', 'Content 1');
+// todoList.addTodo('Task 2', 'Content 2', TodoType.RequireConfirmation);
+// todoList.editTodo(1, 'Task 1 Updated', 'Updated Content 1');
+// todoList.markAsDone(1);
+// todoList.removeTodo(2);
+// const allTodos = todoList.getAllTodos();
+// console.log(allTodos);
+// const unfinishedCount = todoList.getUnfinishedTodosCount();
+// const finishedCount = todoList.getFinishedTodosCount();
+// console.log(`Unfinished Todos: ${unfinishedCount}, Finished Todos: ${finishedCount}`);
+// const searchResults = todoList.searchTodos('Updated');
+// console.log('Search Results:', searchResults);
+// todoList.sortByStatus();
+// console.log('Sorted by Status:', todoList.getAllTodos());
+// todoList.sortByCreationDate();
+// console.log('Sorted by Creation Date:', todoList.getAllTodos());
+
+
+// Task 1
+// interface IBookDetails {
+//     getDetails(): string;
+// }
+
+// class Book implements IBookDetails {
+//     private title: string;
+//     private author: string;
+
+//     constructor(title: string, author: string) {
+//         this.title = title;
+//         this.author = author;
+//     }
+
+//     getDetails(): string {
+//         return `${this.title} by ${this.author}`;
+//     }
+// }
+
+// interface ILibraryOperations {
+//     addBook(book: Book): void;
+//     displayBooks(): void;
+//     getBook(index: number): Book | undefined;
+// }
+
+// class Library implements ILibraryOperations {
+//     private books: Book[] = [];
+
+//     addBook(book: Book): void {
+//         this.books.push(book);
+//     }
+
+//     displayBooks(): void {
+//         console.log("Library Books:");
+//         this.books.forEach((book, index) => {
+//             console.log(`${index + 1}. ${book.getDetails()}`);
+//         });
+//     }
+
+//     getBook(index: number): Book | undefined {
+//         return this.books[index];
+//     }
+// }
+
+// interface IUserActions {
+//     borrowBook(library: Library, bookIndex: number): void;
+// }
+
+// class User implements IUserActions {
+//     private name: string;
+
+//     constructor(name: string) {
+//         this.name = name;
+//     }
+
+//     borrowBook(library: Library, bookIndex: number): void {
+//         const borrowedBook = library.getBook(bookIndex);
+//         if (borrowedBook) {
+//             console.log(`${this.name} borrowed the book: ${borrowedBook.getDetails()}`);
+//         } else {
+//             console.log("Invalid book index.");
+//         }
+//     }
+// }
+
+// Task 2
+// interface IShape {
+//     draw(): void;
+// }
+
+// class Circle implements IShape {
+//     draw(): void {
+//         console.log("Drawing a circle");
+//     }
+// }
+
+// class Rectangle implements IShape {
+//     draw(): void {
+//         console.log("Drawing a rectangle");
+//     }
+// }
+
+// class Triangle implements IShape {
+//     draw(): void {
+//         console.log("Drawing a triangle");
+//     }
+// }
+
+// interface IShapeDraw {
+//     createShape(): IShape;
+// }
+
+// class GraphicEditor {
+//     drawShape(Draw: IShapeDraw): void {
+//         const shape = Draw.createShape();
+//         shape.draw();
+//     }
+// }
+
+// class CircleDraw implements IShapeDraw {
+//     createShape(): IShape {
+//         return new Circle();
+//     }
+// }
+
+// class RectangleDraw implements IShapeDraw {
+//     createShape(): IShape {
+//         return new Rectangle();
+//     }
+// }
+
+// class TriangleDraw implements IShapeDraw {
+//     createShape(): IShape {
+//         return new Triangle();
+//     }
+// }
+
+//Task 3
+interface IShape {
+    draw(): void
 }
 
-enum TodoType {
-    Default = 'default',
-    RequireConfirmation = 'requireConfirmation',
-}
-
-class TodoList {
-    private todos: Todo[];
-
-    constructor() {
-        this.todos = [];
-    }
-
-    addTodo(title: string, content: string, todoType: TodoType = TodoType.Default): void {
-        if (title.trim() === '' || content.trim() === '') {
-            console.error('Title and content cannot be empty.');
-            return;
-        }
-
-        const newTodo: Todo = {
-            id: this.todos.length + 1,
-            title,
-            content,
-            createdDate: new Date(),
-            editedDate: new Date(),
-            isDone: false,
-            todoType,
-        };
-
-        this.todos.push(newTodo);
-    }
-
-    removeTodo(id: number): void {
-        this.todos = this.todos.filter((todo) => todo.id !== id);
-    }
-
-    editTodo(id: number, title: string, content: string): void {
-        const todoIndex = this.findTodoIndexById(id);
-        if (todoIndex !== -1) {
-            this.todos[todoIndex].title = title;
-            this.todos[todoIndex].content = content;
-            this.todos[todoIndex].editedDate = new Date();
-            if (this.todos[todoIndex].todoType === TodoType.RequireConfirmation) {
-                this.todos[todoIndex].isDone = false; // Reset status for confirmed todos
-            }
-        } else {
-            console.error('Todo not found.');
-        }
-    }
-
-    markAsDone(id: number): void {
-        const todoIndex = this.findTodoIndexById(id);
-        if (todoIndex !== -1) {
-            this.todos[todoIndex].isDone = true;
-        } else {
-            console.error('Todo not found.');
-        }
-    }
-
-    getTodoById(id: number): Todo | undefined {
-        return this.todos.find((todo) => todo.id === id);
-    }
-
-    getAllTodos(): Todo[] {
-        return this.todos;
-    }
-
-    getUnfinishedTodosCount(): number {
-        return this.todos.filter((todo) => !todo.isDone).length;
-    }
-
-    getFinishedTodosCount(): number {
-        return this.todos.filter((todo) => todo.isDone).length;
-    }
-
-    searchTodos(query: string): Todo[] {
-        const lowerCaseQuery = query.toLowerCase();
-        return this.todos.filter(
-            (todo) =>
-                todo.title.toLowerCase().includes(lowerCaseQuery) ||
-                todo.content.toLowerCase().includes(lowerCaseQuery)
-        );
-    }
-
-    sortByStatus(): void {
-        this.todos.sort((a, b) => (a.isDone === b.isDone ? 0 : a.isDone ? 1 : -1));
-    }
-
-    sortByCreationDate(): void {
-        this.todos.sort((a, b) => a.createdDate.getTime() - b.createdDate.getTime());
-    }
-
-    private findTodoIndexById(id: number): number {
-        return this.todos.findIndex((todo) => todo.id === id);
+class Square implements IShape {
+    draw(): void {
+        console.log("Drawing a square");
     }
 }
 
-// example of use
+class Circle implements IShape {
+    draw(): void {
+        console.log("Drawing a circle");
+    }
+}
 
-const todoList = new TodoList();
-todoList.addTodo('Task 1', 'Content 1');
-todoList.addTodo('Task 2', 'Content 2', TodoType.RequireConfirmation);
-todoList.editTodo(1, 'Task 1 Updated', 'Updated Content 1');
-todoList.markAsDone(1);
-todoList.removeTodo(2);
-const allTodos = todoList.getAllTodos();
-console.log(allTodos);
-const unfinishedCount = todoList.getUnfinishedTodosCount();
-const finishedCount = todoList.getFinishedTodosCount();
-console.log(`Unfinished Todos: ${unfinishedCount}, Finished Todos: ${finishedCount}`);
-const searchResults = todoList.searchTodos('Updated');
-console.log('Search Results:', searchResults);
-todoList.sortByStatus();
-console.log('Sorted by Status:', todoList.getAllTodos());
-todoList.sortByCreationDate();
-console.log('Sorted by Creation Date:', todoList.getAllTodos());
+class Triangle implements IShape {
+    draw(): void {
+        console.log("Drawing a triangle");
+    }
+}
 
+const square = new Square();
+square.draw();
+
+const circle = new Circle();
+circle.draw();
+
+const triangle = new Triangle();
+triangle.draw();
+
+const shapes: IShape[] = [square, circle, triangle];
+
+shapes.forEach((shape) => shape.draw());
+
+//Task 4
+interface TaskManagementSystem {
+    createTask(title: string, description: string): Task;
+    assignTask(task: Task, assignee: User): void;
+    completeTask(task: Task): void;
+}
+
+class User {
+    constructor(public name: string) { }
+
+    toString(): string {
+        return `User: ${this.name}`;
+    }
+}
+
+class Task {
+    constructor(public title: string, public description: string, public assignee?: User) { }
+
+    toString(): string {
+        return `Task: ${this.title}`;
+    }
+}
+
+class Developer implements TaskManagementSystem {
+    constructor(public name: string) { }
+
+    createTask(title: string, description: string): Task {
+        console.log(`Developer ${this.name} created a task.`);
+        return new Task(title, description);
+    }
+
+    assignTask(task: Task, assignee: User): void {
+        console.log(`Developer ${this.name} assigned a task to ${assignee}.`);
+        task.assignee = assignee;
+    }
+
+    completeTask(task: Task): void {
+        console.log(`Developer ${this.name} completed the task: ${task.title}`);
+    }
+
+}
+
+class Manager implements TaskManagementSystem {
+    constructor(public name: string) { }
+
+    createTask(title: string, description: string): Task {
+        console.log(`Manager ${this.name} created a task.`);
+        return new Task(title, description);
+    }
+
+    assignTask(task: Task, assignee: User): void {
+        console.log(`Manager ${this.name} assigned a task to ${assignee}.`);
+        task.assignee = assignee;
+    }
+
+    completeTask(task: Task): void {
+        console.log(`Manager ${this.name} completed the task: ${task.title}`);
+    }
+}
+
+//Task 5
+interface MessageHandler {
+    handleMessage(message: string): void;
+}
+
+class HighLevelModule {
+    private messageHandler: MessageHandler;
+
+    constructor(handler: MessageHandler) {
+        this.messageHandler = handler;
+    }
+
+    sendMessage(message: string): void {
+        console.log(`High-level module sends a message: ${message}`);
+        this.messageHandler.handleMessage(message);
+    }
+}
+
+class LowLevelModuleA implements MessageHandler {
+    handleMessage(message: string): void {
+        console.log(`Low-level module A handles the message: ${message}`);
+    }
+}
+
+class LowLevelModuleB implements MessageHandler {
+    handleMessage(message: string): void {
+        console.log(`Low-level module B handles the message: ${message}`);
+    }
+}
 

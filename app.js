@@ -1,99 +1,95 @@
 "use strict";
 // let firstWord: string = "Hello World on TS"
 // console.log(firstWord);
-var TodoType;
-(function (TodoType) {
-    TodoType["Default"] = "default";
-    TodoType["RequireConfirmation"] = "requireConfirmation";
-})(TodoType || (TodoType = {}));
-class TodoList {
-    constructor() {
-        this.todos = [];
-    }
-    addTodo(title, content, todoType = TodoType.Default) {
-        if (title.trim() === '' || content.trim() === '') {
-            console.error('Title and content cannot be empty.');
-            return;
-        }
-        const newTodo = {
-            id: this.todos.length + 1,
-            title,
-            content,
-            createdDate: new Date(),
-            editedDate: new Date(),
-            isDone: false,
-            todoType,
-        };
-        this.todos.push(newTodo);
-    }
-    removeTodo(id) {
-        this.todos = this.todos.filter((todo) => todo.id !== id);
-    }
-    editTodo(id, title, content) {
-        const todoIndex = this.findTodoIndexById(id);
-        if (todoIndex !== -1) {
-            this.todos[todoIndex].title = title;
-            this.todos[todoIndex].content = content;
-            this.todos[todoIndex].editedDate = new Date();
-            if (this.todos[todoIndex].todoType === TodoType.RequireConfirmation) {
-                this.todos[todoIndex].isDone = false; // Reset status for confirmed todos
-            }
-        }
-        else {
-            console.error('Todo not found.');
-        }
-    }
-    markAsDone(id) {
-        const todoIndex = this.findTodoIndexById(id);
-        if (todoIndex !== -1) {
-            this.todos[todoIndex].isDone = true;
-        }
-        else {
-            console.error('Todo not found.');
-        }
-    }
-    getTodoById(id) {
-        return this.todos.find((todo) => todo.id === id);
-    }
-    getAllTodos() {
-        return this.todos;
-    }
-    getUnfinishedTodosCount() {
-        return this.todos.filter((todo) => !todo.isDone).length;
-    }
-    getFinishedTodosCount() {
-        return this.todos.filter((todo) => todo.isDone).length;
-    }
-    searchTodos(query) {
-        const lowerCaseQuery = query.toLowerCase();
-        return this.todos.filter((todo) => todo.title.toLowerCase().includes(lowerCaseQuery) ||
-            todo.content.toLowerCase().includes(lowerCaseQuery));
-    }
-    sortByStatus() {
-        this.todos.sort((a, b) => (a.isDone === b.isDone ? 0 : a.isDone ? 1 : -1));
-    }
-    sortByCreationDate() {
-        this.todos.sort((a, b) => a.createdDate.getTime() - b.createdDate.getTime());
-    }
-    findTodoIndexById(id) {
-        return this.todos.findIndex((todo) => todo.id === id);
+class Square {
+    draw() {
+        console.log("Drawing a square");
     }
 }
-// example of use
-const todoList = new TodoList();
-todoList.addTodo('Task 1', 'Content 1');
-todoList.addTodo('Task 2', 'Content 2', TodoType.RequireConfirmation);
-todoList.editTodo(1, 'Task 1 Updated', 'Updated Content 1');
-todoList.markAsDone(1);
-todoList.removeTodo(2);
-const allTodos = todoList.getAllTodos();
-console.log(allTodos);
-const unfinishedCount = todoList.getUnfinishedTodosCount();
-const finishedCount = todoList.getFinishedTodosCount();
-console.log(`Unfinished Todos: ${unfinishedCount}, Finished Todos: ${finishedCount}`);
-const searchResults = todoList.searchTodos('Updated');
-console.log('Search Results:', searchResults);
-todoList.sortByStatus();
-console.log('Sorted by Status:', todoList.getAllTodos());
-todoList.sortByCreationDate();
-console.log('Sorted by Creation Date:', todoList.getAllTodos());
+class Circle {
+    draw() {
+        console.log("Drawing a circle");
+    }
+}
+class Triangle {
+    draw() {
+        console.log("Drawing a triangle");
+    }
+}
+const square = new Square();
+square.draw();
+const circle = new Circle();
+circle.draw();
+const triangle = new Triangle();
+triangle.draw();
+const shapes = [square, circle, triangle];
+shapes.forEach((shape) => shape.draw());
+class User {
+    constructor(name) {
+        this.name = name;
+    }
+    toString() {
+        return `User: ${this.name}`;
+    }
+}
+class Task {
+    constructor(title, description, assignee) {
+        this.title = title;
+        this.description = description;
+        this.assignee = assignee;
+    }
+    toString() {
+        return `Task: ${this.title}`;
+    }
+}
+class Developer {
+    constructor(name) {
+        this.name = name;
+    }
+    createTask(title, description) {
+        console.log(`Developer ${this.name} created a task.`);
+        return new Task(title, description);
+    }
+    assignTask(task, assignee) {
+        console.log(`Developer ${this.name} assigned a task to ${assignee}.`);
+        task.assignee = assignee;
+    }
+    completeTask(task) {
+        console.log(`Developer ${this.name} completed the task: ${task.title}`);
+    }
+}
+class Manager {
+    constructor(name) {
+        this.name = name;
+    }
+    createTask(title, description) {
+        console.log(`Manager ${this.name} created a task.`);
+        return new Task(title, description);
+    }
+    assignTask(task, assignee) {
+        console.log(`Manager ${this.name} assigned a task to ${assignee}.`);
+        task.assignee = assignee;
+    }
+    completeTask(task) {
+        console.log(`Manager ${this.name} completed the task: ${task.title}`);
+    }
+}
+class HighLevelModule {
+    constructor(handler) {
+        this.messageHandler = handler;
+    }
+    sendMessage(message) {
+        console.log(`High-level module sends a message: ${message}`);
+        this.messageHandler.handleMessage(message);
+    }
+}
+class LowLevelModuleA {
+    handleMessage(message) {
+        console.log(`Low-level module A handles the message: ${message}`);
+    }
+}
+class LowLevelModuleB {
+    handleMessage(message) {
+        console.log(`Low-level module B handles the message: ${message}`);
+    }
+}

@@ -930,87 +930,20 @@
 //     }
 // }
 
-// Task 2
-interface IShape {
-    draw(): void;
-}
-
-class Circle implements IShape {
-    draw(): void {
-        console.log("Drawing a circle");
-    }
-}
-
-class Rectangle implements IShape {
-    draw(): void {
-        console.log("Drawing a rectangle");
-    }
-}
-
-class Triangle implements IShape {
-    draw(): void {
-        console.log("Drawing a triangle");
-    }
-}
-
-class Ellipse implements IShape {
-    draw(): void {
-        console.log("Drawing an ellipse");
-    }
-}
-
-interface IShapeDraw {
-    createShape(): IShape;
-}
-
-class GraphicEditor {
-    drawShape(Draw: IShapeDraw): void {
-        const shape = Draw.createShape();
-        shape.draw();
-    }
-}
-
-class CircleDraw implements IShapeDraw {
-    createShape(): IShape {
-        return new Circle();
-    }
-}
-
-class RectangleDraw implements IShapeDraw {
-    createShape(): IShape {
-        return new Rectangle();
-    }
-}
-
-class TriangleDraw implements IShapeDraw {
-    createShape(): IShape {
-        return new Triangle();
-    }
-}
-
-class EllipseDraw implements IShapeDraw {
-    createShape(): IShape {
-        return new Ellipse();
-    }
-}
-
-const graphicEditor = new GraphicEditor();
-graphicEditor.drawShape(new EllipseDraw());
-
-//Task 3
+// // Task 2
 // interface IShape {
-//     draw(): void
-// }
-
-// class Square implements IShape {
-//     draw(): void {
-//         console.log("Drawing a square");
-//     }
+//     draw(): void;
 // }
 
 // class Circle implements IShape {
 //     draw(): void {
 //         console.log("Drawing a circle");
+//     }
+// }
+
+// class Rectangle implements IShape {
+//     draw(): void {
+//         console.log("Drawing a rectangle");
 //     }
 // }
 
@@ -1020,112 +953,225 @@ graphicEditor.drawShape(new EllipseDraw());
 //     }
 // }
 
-// const square = new Square();
-// square.draw();
+// class Ellipse implements IShape {
+//     draw(): void {
+//         console.log("Drawing an ellipse");
+//     }
+// }
 
-// const circle = new Circle();
-// circle.draw();
+// interface IShapeDraw {
+//     createShape(): IShape;
+// }
 
-// const triangle = new Triangle();
-// triangle.draw();
+// class GraphicEditor {
+//     drawShape(Draw: IShapeDraw): void {
+//         const shape = Draw.createShape();
+//         shape.draw();
+//     }
+// }
 
-// const shapes: IShape[] = [square, circle, triangle];
+// class CircleDraw implements IShapeDraw {
+//     createShape(): IShape {
+//         return new Circle();
+//     }
+// }
 
-// shapes.forEach((shape) => shape.draw());
+// class RectangleDraw implements IShapeDraw {
+//     createShape(): IShape {
+//         return new Rectangle();
+//     }
+// }
 
-//Task 4
-interface TaskCreation {
-    createTask(title: string, description: string): Task;
-}
+// class TriangleDraw implements IShapeDraw {
+//     createShape(): IShape {
+//         return new Triangle();
+//     }
+// }
 
-interface TaskAssignment {
-    assignTask(task: Task, assignee: User): void;
-}
+// class EllipseDraw implements IShapeDraw {
+//     createShape(): IShape {
+//         return new Ellipse();
+//     }
+// }
 
-interface TaskCompletion {
-    completeTask(task: Task): void;
-}
+// const graphicEditor = new GraphicEditor();
+// graphicEditor.drawShape(new EllipseDraw());
 
-class User {
-    constructor(public name: string) { }
+// //Task 3
+// // interface IShape {
+// //     draw(): void
+// // }
 
-    toString(): string {
-        return `User: ${this.name}`;
+// // class Square implements IShape {
+// //     draw(): void {
+// //         console.log("Drawing a square");
+// //     }
+// // }
+
+// // class Circle implements IShape {
+// //     draw(): void {
+// //         console.log("Drawing a circle");
+// //     }
+// // }
+
+// // class Triangle implements IShape {
+// //     draw(): void {
+// //         console.log("Drawing a triangle");
+// //     }
+// // }
+
+// // const square = new Square();
+// // square.draw();
+
+// // const circle = new Circle();
+// // circle.draw();
+
+// // const triangle = new Triangle();
+// // triangle.draw();
+
+// // const shapes: IShape[] = [square, circle, triangle];
+
+// // shapes.forEach((shape) => shape.draw());
+
+// //Task 4
+// interface TaskCreation {
+//     createTask(title: string, description: string): Task;
+// }
+
+// interface TaskAssignment {
+//     assignTask(task: Task, assignee: User): void;
+// }
+
+// interface TaskCompletion {
+//     completeTask(task: Task): void;
+// }
+
+// class User {
+//     constructor(public name: string) { }
+
+//     toString(): string {
+//         return `User: ${this.name}`;
+//     }
+// }
+
+// class Task {
+//     constructor(public title: string, public description: string, public assignee?: User) { }
+
+//     toString(): string {
+//         return `Task: ${this.title}`;
+//     }
+// }
+
+// class Developer implements TaskCompletion {
+//     constructor(public name: string) { }
+
+//     completeTask(task: Task): void {
+//         console.log(`Developer ${this.name} completed the task: ${task.title}`);
+//     }
+// }
+
+// class Manager implements TaskCreation, TaskAssignment, TaskCompletion {
+//     constructor(public name: string) { }
+
+//     createTask(title: string, description: string): Task {
+//         console.log(`Manager ${this.name} created a task.`);
+//         return new Task(title, description);
+//     }
+
+//     assignTask(task: Task, assignee: User): void {
+//         console.log(`Manager ${this.name} assigned a task to ${assignee}.`);
+//         task.assignee = assignee;
+//     }
+
+//     completeTask(task: Task): void {
+//         console.log(`Manager ${this.name} completed the task: ${task.title}`);
+//     }
+// }
+
+
+// //Task 5
+// interface MessageHandler {
+//     handleMessage(message: string): void;
+// }
+
+// class HighLevelModule {
+//     private messageHandler: MessageHandler;
+
+//     constructor(handler: MessageHandler) {
+//         this.messageHandler = handler;
+//     }
+
+//     sendMessage(message: string): void {
+//         console.log(`High-level module sends a message: ${message}`);
+//         this.messageHandler.handleMessage(message);
+//     }
+// }
+
+// class LowLevelModuleA implements MessageHandler {
+//     handleMessage(message: string): void {
+//         console.log(`Low-level module A handles the message: ${message}`);
+//     }
+// }
+
+// class LowLevelModuleB implements MessageHandler {
+//     handleMessage(message: string): void {
+//         console.log(`Low-level module B handles the message: ${message}`);
+//     }
+// }
+
+
+class AudioPlayer {
+    playAudio(file: string): void {
+        console.log(`Playing audio: ${file}`);
+    }
+
+    stopAudio(): void {
+        console.log('Audio playback stopped');
     }
 }
 
-class Task {
-    constructor(public title: string, public description: string, public assignee?: User) { }
+class VideoPlayer {
+    playVideo(file: string): void {
+        console.log(`Playing video: ${file}`);
+    }
 
-    toString(): string {
-        return `Task: ${this.title}`;
+    stopVideo(): void {
+        console.log('Video playback stopped');
     }
 }
 
-class Developer implements TaskCreation, TaskAssignment, TaskCompletion {
-    constructor(public name: string) { }
+interface MultimediaPlayer {
+    playAudio(file: string): void;
+    stopAudio(): void;
+    playVideo(file: string): void;
+    stopVideo(): void;
+}
 
-    createTask(title: string, description: string): Task {
-        console.log(`Developer ${this.name} created a task.`);
-        return new Task(title, description);
+class MultimediaPlayerFacade implements MultimediaPlayer {
+    private audioPlayer: AudioPlayer;
+    private videoPlayer: VideoPlayer;
+
+    constructor() {
+        this.audioPlayer = new AudioPlayer();
+        this.videoPlayer = new VideoPlayer();
     }
 
-    assignTask(task: Task, assignee: User): void {
-        console.log(`Developer ${this.name} assigned a task to ${assignee}.`);
-        task.assignee = assignee;
+    playAudio(file: string): void {
+        this.audioPlayer.playAudio(file);
     }
 
-    completeTask(task: Task): void {
-        console.log(`Developer ${this.name} completed the task: ${task.title}`);
+    stopAudio(): void {
+        this.audioPlayer.stopAudio();
+    }
+
+    playVideo(file: string): void {
+        this.videoPlayer.playVideo(file);
+    }
+
+    stopVideo(): void {
+        this.videoPlayer.stopVideo();
     }
 }
 
-class Manager implements TaskCreation, TaskAssignment, TaskCompletion {
-    constructor(public name: string) { }
-
-    createTask(title: string, description: string): Task {
-        console.log(`Manager ${this.name} created a task.`);
-        return new Task(title, description);
-    }
-
-    assignTask(task: Task, assignee: User): void {
-        console.log(`Manager ${this.name} assigned a task to ${assignee}.`);
-        task.assignee = assignee;
-    }
-
-    completeTask(task: Task): void {
-        console.log(`Manager ${this.name} completed the task: ${task.title}`);
-    }
-}
-
-
-//Task 5
-interface MessageHandler {
-    handleMessage(message: string): void;
-}
-
-class HighLevelModule {
-    private messageHandler: MessageHandler;
-
-    constructor(handler: MessageHandler) {
-        this.messageHandler = handler;
-    }
-
-    sendMessage(message: string): void {
-        console.log(`High-level module sends a message: ${message}`);
-        this.messageHandler.handleMessage(message);
-    }
-}
-
-class LowLevelModuleA implements MessageHandler {
-    handleMessage(message: string): void {
-        console.log(`Low-level module A handles the message: ${message}`);
-    }
-}
-
-class LowLevelModuleB implements MessageHandler {
-    handleMessage(message: string): void {
-        console.log(`Low-level module B handles the message: ${message}`);
-    }
-}
+const multimediaPlayer: MultimediaPlayer = new MultimediaPlayerFacade();
 

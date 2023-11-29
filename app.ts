@@ -1120,58 +1120,137 @@
 // }
 
 
-class AudioPlayer {
-    playAudio(file: string): void {
-        console.log(`Playing audio: ${file}`);
-    }
+// class AudioPlayer {
+//     playAudio(file: string): void {
+//         console.log(`Playing audio: ${file}`);
+//     }
 
-    stopAudio(): void {
-        console.log('Audio playback stopped');
+//     stopAudio(): void {
+//         console.log('Audio playback stopped');
+//     }
+// }
+
+// class VideoPlayer {
+//     playVideo(file: string): void {
+//         console.log(`Playing video: ${file}`);
+//     }
+
+//     stopVideo(): void {
+//         console.log('Video playback stopped');
+//     }
+// }
+
+// interface MultimediaPlayer {
+//     playAudio(file: string): void;
+//     stopAudio(): void;
+//     playVideo(file: string): void;
+//     stopVideo(): void;
+// }
+
+// class MultimediaPlayerFacade implements MultimediaPlayer {
+//     private audioPlayer: AudioPlayer;
+//     private videoPlayer: VideoPlayer;
+
+//     constructor() {
+//         this.audioPlayer = new AudioPlayer();
+//         this.videoPlayer = new VideoPlayer();
+//     }
+
+//     playAudio(file: string): void {
+//         this.audioPlayer.playAudio(file);
+//     }
+
+//     stopAudio(): void {
+//         this.audioPlayer.stopAudio();
+//     }
+
+//     playVideo(file: string): void {
+//         this.videoPlayer.playVideo(file);
+//     }
+
+//     stopVideo(): void {
+//         this.videoPlayer.stopVideo();
+//     }
+// }
+
+// const multimediaPlayer: MultimediaPlayer = new MultimediaPlayerFacade();
+
+
+interface Currency {
+    convert(amount: number, fromCurrency: string, toCurrency: string): number;
+}
+
+class CurrencyConverter {
+    convert(amount: number, fromCurrency: string, toCurrency: string): number {
+        return Math.random() * amount;
     }
 }
 
-class VideoPlayer {
-    playVideo(file: string): void {
-        console.log(`Playing video: ${file}`);
-    }
-
-    stopVideo(): void {
-        console.log('Video playback stopped');
-    }
-}
-
-interface MultimediaPlayer {
-    playAudio(file: string): void;
-    stopAudio(): void;
-    playVideo(file: string): void;
-    stopVideo(): void;
-}
-
-class MultimediaPlayerFacade implements MultimediaPlayer {
-    private audioPlayer: AudioPlayer;
-    private videoPlayer: VideoPlayer;
+class CurrencyAdapter implements Currency {
+    private currencyConverter: CurrencyConverter;
 
     constructor() {
-        this.audioPlayer = new AudioPlayer();
-        this.videoPlayer = new VideoPlayer();
+        this.currencyConverter = new CurrencyConverter();
     }
 
-    playAudio(file: string): void {
-        this.audioPlayer.playAudio(file);
+    convert(amount: number, fromCurrency: string, toCurrency: string): number {
+        return this.currencyConverter.convert(amount, fromCurrency, toCurrency);
     }
+}
+const financialSystem: Currency = new CurrencyAdapter();
+const convertedAmount = financialSystem.convert(100, 'USD', 'EUR');
+console.log(`Converted Amount: ${convertedAmount}`);
 
-    stopAudio(): void {
-        this.audioPlayer.stopAudio();
-    }
+interface MusicPlayerImplementor {
+    playFile(): void;
+}
 
-    playVideo(file: string): void {
-        this.videoPlayer.playVideo(file);
-    }
-
-    stopVideo(): void {
-        this.videoPlayer.stopVideo();
+class Mp3PlayerImplementor implements MusicPlayerImplementor {
+    playFile(): void {
+        console.log('Playing MP3 file');
     }
 }
 
-const multimediaPlayer: MultimediaPlayer = new MultimediaPlayerFacade();
+class WavPlayerImplementor implements MusicPlayerImplementor {
+    playFile(): void {
+        console.log('Playing WAV file');
+    }
+}
 
+abstract class MusicPlayerAbstraction {
+    protected implementor: MusicPlayerImplementor;
+
+    constructor(implementor: MusicPlayerImplementor) {
+        this.implementor = implementor;
+    }
+
+    abstract play(): void;
+}
+
+class Mp3PlayerAbstraction extends MusicPlayerAbstraction {
+    constructor(implementor: MusicPlayerImplementor) {
+        super(implementor);
+    }
+
+    play(): void {
+        console.log('Loading MP3 file');
+        this.implementor.playFile();
+    }
+}
+
+class WavPlayerAbstraction extends MusicPlayerAbstraction {
+    constructor(implementor: MusicPlayerImplementor) {
+        super(implementor);
+    }
+
+    play(): void {
+        console.log('Loading WAV file');
+        this.implementor.playFile();
+    }
+}
+const mp3Implementor: MusicPlayerImplementor = new Mp3PlayerImplementor();
+const wavImplementor: MusicPlayerImplementor = new WavPlayerImplementor();
+const mp3Player: MusicPlayerAbstraction = new Mp3PlayerAbstraction(mp3Implementor);
+mp3Player.play();
+const wavPlayer: MusicPlayerAbstraction = new WavPlayerAbstraction(wavImplementor);
+wavPlayer.play();

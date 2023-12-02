@@ -1176,47 +1176,47 @@
 // const multimediaPlayer: MultimediaPlayer = new MultimediaPlayerFacade();
 
 
-interface Currency {
-    convert(amount: number, fromCurrency: string, toCurrency: string): number;
-}
+// interface Currency {
+//     convert(amount: number, fromCurrency: string, toCurrency: string): number;
+// }
 
-class CurrencyConverterV1 {
-    convertCurrency(amount: number, fromCurrency: string, toCurrency: string): number {
-        // "conversion logic"
-        return Math.random() * amount;
-    }
-}
+// class CurrencyConverterV1 {
+//     convertCurrency(amount: number, fromCurrency: string, toCurrency: string): number {
+//         // "conversion logic"
+//         return Math.random() * amount;
+//     }
+// }
 
-class CurrencyConverterV2 {
-    performConversion(amount: number, fromCurrency: string, toCurrency: string): number {
-        // "different conversion logic"
-        return Math.random() * amount;
-    }
-}
+// class CurrencyConverterV2 {
+//     performConversion(amount: number, fromCurrency: string, toCurrency: string): number {
+//         // "different conversion logic"
+//         return Math.random() * amount;
+//     }
+// }
 
-class CurrencyAdapter implements Currency {
-    private currencyConverter: any;
+// class CurrencyAdapter implements Currency {
+//     private currencyConverter: any;
 
-    constructor(converter: any) {
-        this.currencyConverter = converter;
-    }
+//     constructor(converter: any) {
+//         this.currencyConverter = converter;
+//     }
 
-    convert(amount: number, fromCurrency: string, toCurrency: string): number {
-        return this.currencyConverter.convert(amount, fromCurrency, toCurrency);
-    }
-}
+//     convert(amount: number, fromCurrency: string, toCurrency: string): number {
+//         return this.currencyConverter.convert(amount, fromCurrency, toCurrency);
+//     }
+// }
 
-// Demonstrate with CurrencyConverterV1
-const converterV1: CurrencyConverterV1 = new CurrencyConverterV1();
-const adapterV1: Currency = new CurrencyAdapter(converterV1);
-const convertedAmountV1 = adapterV1.convert(100, 'USD', 'EUR');
-console.log(`Converted Amount (V1): ${convertedAmountV1}`);
+// // Demonstrate with CurrencyConverterV1
+// const converterV1: CurrencyConverterV1 = new CurrencyConverterV1();
+// const adapterV1: Currency = new CurrencyAdapter(converterV1);
+// const convertedAmountV1 = adapterV1.convert(100, 'USD', 'EUR');
+// console.log(`Converted Amount (V1): ${convertedAmountV1}`);
 
-// Demonstrate with CurrencyConverterV2
-const converterV2: CurrencyConverterV2 = new CurrencyConverterV2();
-const adapterV2: Currency = new CurrencyAdapter(converterV2);
-const convertedAmountV2 = adapterV2.convert(100, 'USD', 'EUR');
-console.log(`Converted Amount (V2): ${convertedAmountV2}`);
+// // Demonstrate with CurrencyConverterV2
+// const converterV2: CurrencyConverterV2 = new CurrencyConverterV2();
+// const adapterV2: Currency = new CurrencyAdapter(converterV2);
+// const convertedAmountV2 = adapterV2.convert(100, 'USD', 'EUR');
+// console.log(`Converted Amount (V2): ${convertedAmountV2}`);
 
 
 
@@ -1273,3 +1273,105 @@ console.log(`Converted Amount (V2): ${convertedAmountV2}`);
 // mp3Player.play();
 // const wavPlayer: MusicPlayerAbstraction = new WavPlayerAbstraction(wavImplementor);
 // wavPlayer.play();
+
+// Task 1 //
+interface IObserver {
+    update(data: any): void;
+}
+
+class Subject {
+    private observers: IObserver[] = [];
+
+    subscribe(observer: IObserver): void {
+        this.observers.push(observer);
+    }
+
+    unsubscribe(observer: IObserver): void {
+        this.observers = this.observers.filter(obs => obs !== observer);
+    }
+
+    notify(data: any): void {
+        this.observers.forEach(observer => observer.update(data));
+    }
+}
+
+class StockObserver implements IObserver {
+    private stockPrice: number;
+
+    constructor() {
+        this.stockPrice = 0;
+    }
+
+    update(data: any): void {
+        console.log(`Stock price updated: ${data}`);
+        this.stockPrice = data;
+    }
+
+    getStockPrice(): number {
+        return this.stockPrice;
+    }
+}
+
+const subject = new Subject();
+
+const observer1 = new StockObserver();
+const observer2 = new StockObserver();
+
+subject.subscribe(observer1);
+subject.subscribe(observer2);
+
+subject.notify(200);
+console.log(`Observer 1 stock price: ${observer1.getStockPrice()}`);
+console.log(`Observer 2 stock price: ${observer2.getStockPrice()}`);
+subject.notify(180);
+console.log(`Observer 1 stock price: ${observer1.getStockPrice()}`);
+console.log(`Observer 2 stock price: ${observer2.getStockPrice()}`);
+
+// Task 2 //
+interface PaymentStrategy {
+    pay(amount: number): void;
+}
+
+class CreditCardPaymentStrategy implements PaymentStrategy {
+    pay(amount: number): void {
+        console.log(`Paid $${amount} with Credit Card`);
+    }
+}
+
+class PaypalPaymentStrategy implements PaymentStrategy {
+    pay(amount: number): void {
+        console.log(`Paid $${amount} with Paypal`);
+    }
+}
+
+class BitcoinPaymentStrategy implements PaymentStrategy {
+    pay(amount: number): void {
+        console.log(`Paid $${amount} with Bitcoin`);
+    }
+}
+
+class PaymentContext {
+    public paymentStrategy: PaymentStrategy;
+
+    constructor(paymentStrategy: PaymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
+    }
+
+    executePayment(amount: number): void {
+        this.paymentStrategy.pay(amount);
+    }
+}
+
+const creditCardStrategy = new CreditCardPaymentStrategy();
+const paypalStrategy = new PaypalPaymentStrategy();
+const bitcoinStrategy = new BitcoinPaymentStrategy();
+
+const paymentContext = new PaymentContext(creditCardStrategy);
+paymentContext.executePayment(100);
+
+paymentContext.paymentStrategy = paypalStrategy;
+paymentContext.executePayment(50);
+
+paymentContext.paymentStrategy = bitcoinStrategy;
+paymentContext.executePayment(200);
+

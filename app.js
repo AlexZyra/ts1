@@ -1,77 +1,72 @@
 "use strict";
 // let firstWord: string = "Hello World on TS"
 // console.log(firstWord);
-class CurrencyConverterV1 {
-    convertCurrency(amount, fromCurrency, toCurrency) {
-        // "conversion logic"
-        return Math.random() * amount;
+class Subject {
+    constructor() {
+        this.observers = [];
+    }
+    subscribe(observer) {
+        this.observers.push(observer);
+    }
+    unsubscribe(observer) {
+        this.observers = this.observers.filter(obs => obs !== observer);
+    }
+    notify(data) {
+        this.observers.forEach(observer => observer.update(data));
     }
 }
-class CurrencyConverterV2 {
-    performConversion(amount, fromCurrency, toCurrency) {
-        // "different conversion logic"
-        return Math.random() * amount;
+class StockObserver {
+    constructor() {
+        this.stockPrice = 0;
+    }
+    update(data) {
+        console.log(`Stock price updated: ${data}`);
+        this.stockPrice = data;
+    }
+    getStockPrice() {
+        return this.stockPrice;
     }
 }
-class CurrencyAdapter {
-    constructor(converter) {
-        this.currencyConverter = converter;
-    }
-    convert(amount, fromCurrency, toCurrency) {
-        return this.currencyConverter.convert(amount, fromCurrency, toCurrency);
+const subject = new Subject();
+const observer1 = new StockObserver();
+const observer2 = new StockObserver();
+subject.subscribe(observer1);
+subject.subscribe(observer2);
+subject.notify(200);
+console.log(`Observer 1 stock price: ${observer1.getStockPrice()}`);
+console.log(`Observer 2 stock price: ${observer2.getStockPrice()}`);
+subject.notify(180);
+console.log(`Observer 1 stock price: ${observer1.getStockPrice()}`);
+console.log(`Observer 2 stock price: ${observer2.getStockPrice()}`);
+class CreditCardPaymentStrategy {
+    pay(amount) {
+        console.log(`Paid $${amount} with Credit Card`);
     }
 }
-// Demonstrate with CurrencyConverterV1
-const converterV1 = new CurrencyConverterV1();
-const adapterV1 = new CurrencyAdapter(converterV1);
-const convertedAmountV1 = adapterV1.convert(100, 'USD', 'EUR');
-console.log(`Converted Amount (V1): ${convertedAmountV1}`);
-// Demonstrate with CurrencyConverterV2
-const converterV2 = new CurrencyConverterV2();
-const adapterV2 = new CurrencyAdapter(converterV2);
-const convertedAmountV2 = adapterV2.convert(100, 'USD', 'EUR');
-console.log(`Converted Amount (V2): ${convertedAmountV2}`);
-// interface MusicPlayerImplementor {
-//     playFile(): void;
-// }
-// class Mp3PlayerImplementor implements MusicPlayerImplementor {
-//     playFile(): void {
-//         console.log('Playing MP3 file');
-//     }
-// }
-// class WavPlayerImplementor implements MusicPlayerImplementor {
-//     playFile(): void {
-//         console.log('Playing WAV file');
-//     }
-// }
-// abstract class MusicPlayerAbstraction {
-//     protected implementor: MusicPlayerImplementor;
-//     constructor(implementor: MusicPlayerImplementor) {
-//         this.implementor = implementor;
-//     }
-//     abstract play(): void;
-// }
-// class Mp3PlayerAbstraction extends MusicPlayerAbstraction {
-//     constructor(implementor: MusicPlayerImplementor) {
-//         super(implementor);
-//     }
-//     play(): void {
-//         console.log('Loading MP3 file');
-//         this.implementor.playFile();
-//     }
-// }
-// class WavPlayerAbstraction extends MusicPlayerAbstraction {
-//     constructor(implementor: MusicPlayerImplementor) {
-//         super(implementor);
-//     }
-//     play(): void {
-//         console.log('Loading WAV file');
-//         this.implementor.playFile();
-//     }
-// }
-// const mp3Implementor: MusicPlayerImplementor = new Mp3PlayerImplementor();
-// const wavImplementor: MusicPlayerImplementor = new WavPlayerImplementor();
-// const mp3Player: MusicPlayerAbstraction = new Mp3PlayerAbstraction(mp3Implementor);
-// mp3Player.play();
-// const wavPlayer: MusicPlayerAbstraction = new WavPlayerAbstraction(wavImplementor);
-// wavPlayer.play();
+class PaypalPaymentStrategy {
+    pay(amount) {
+        console.log(`Paid $${amount} with Paypal`);
+    }
+}
+class BitcoinPaymentStrategy {
+    pay(amount) {
+        console.log(`Paid $${amount} with Bitcoin`);
+    }
+}
+class PaymentContext {
+    constructor(paymentStrategy) {
+        this.paymentStrategy = paymentStrategy;
+    }
+    executePayment(amount) {
+        this.paymentStrategy.pay(amount);
+    }
+}
+const creditCardStrategy = new CreditCardPaymentStrategy();
+const paypalStrategy = new PaypalPaymentStrategy();
+const bitcoinStrategy = new BitcoinPaymentStrategy();
+const paymentContext = new PaymentContext(creditCardStrategy);
+paymentContext.executePayment(100);
+paymentContext.paymentStrategy = paypalStrategy;
+paymentContext.executePayment(50);
+paymentContext.paymentStrategy = bitcoinStrategy;
+paymentContext.executePayment(200);

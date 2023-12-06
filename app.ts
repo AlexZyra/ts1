@@ -1275,103 +1275,375 @@
 // wavPlayer.play();
 
 // Task 1 //
-interface IObserver {
-    update(data: any): void;
+// interface IObserver {
+//     update(data: any): void;
+// }
+
+// class Subject {
+//     private observers: IObserver[] = [];
+
+//     subscribe(observer: IObserver): void {
+//         this.observers.push(observer);
+//     }
+
+//     unsubscribe(observer: IObserver): void {
+//         this.observers = this.observers.filter(obs => obs !== observer);
+//     }
+
+//     notify(data: any): void {
+//         this.observers.forEach(observer => observer.update(data));
+//     }
+// }
+
+// class StockObserver implements IObserver {
+//     private stockPrice: number;
+
+//     constructor() {
+//         this.stockPrice = 0;
+//     }
+
+//     update(data: any): void {
+//         console.log(`Stock price updated: ${data}`);
+//         this.stockPrice = data;
+//     }
+
+//     getStockPrice(): number {
+//         return this.stockPrice;
+//     }
+// }
+
+// const subject = new Subject();
+
+// const observer1 = new StockObserver();
+// const observer2 = new StockObserver();
+
+// subject.subscribe(observer1);
+// subject.subscribe(observer2);
+
+// subject.notify(200);
+// console.log(`Observer 1 stock price: ${observer1.getStockPrice()}`);
+// console.log(`Observer 2 stock price: ${observer2.getStockPrice()}`);
+// subject.notify(180);
+// console.log(`Observer 1 stock price: ${observer1.getStockPrice()}`);
+// console.log(`Observer 2 stock price: ${observer2.getStockPrice()}`);
+
+// // Task 2 //
+// interface PaymentStrategy {
+//     pay(amount: number): void;
+// }
+
+// class CreditCardPaymentStrategy implements PaymentStrategy {
+//     pay(amount: number): void {
+//         console.log(`Paid $${amount} with Credit Card`);
+//     }
+// }
+
+// class PaypalPaymentStrategy implements PaymentStrategy {
+//     pay(amount: number): void {
+//         console.log(`Paid $${amount} with Paypal`);
+//     }
+// }
+
+// class BitcoinPaymentStrategy implements PaymentStrategy {
+//     pay(amount: number): void {
+//         console.log(`Paid $${amount} with Bitcoin`);
+//     }
+// }
+
+// class PaymentContext {
+//     public paymentStrategy: PaymentStrategy;
+
+//     constructor(paymentStrategy: PaymentStrategy) {
+//         this.paymentStrategy = paymentStrategy;
+//     }
+
+//     executePayment(amount: number): void {
+//         this.paymentStrategy.pay(amount);
+//     }
+// }
+
+// const creditCardStrategy = new CreditCardPaymentStrategy();
+// const paypalStrategy = new PaypalPaymentStrategy();
+// const bitcoinStrategy = new BitcoinPaymentStrategy();
+
+// const paymentContext = new PaymentContext(creditCardStrategy);
+// paymentContext.executePayment(100);
+
+// paymentContext.paymentStrategy = paypalStrategy;
+// paymentContext.executePayment(50);
+
+// paymentContext.paymentStrategy = bitcoinStrategy;
+// paymentContext.executePayment(200);
+
+
+// Task 1
+class SupportRequest {
+    private type: string;
+    private details: string;
+
+    constructor(type: string, details: string) {
+        this.type = type;
+        this.details = details;
+    }
+
+    getType(): string {
+        return this.type;
+    }
+
+    getDetails(): string {
+        return this.details;
+    }
 }
 
-class Subject {
-    private observers: IObserver[] = [];
+class AllResponse {
+    private content: string;
 
-    subscribe(observer: IObserver): void {
-        this.observers.push(observer);
+    constructor(content: string) {
+        this.content = content;
     }
 
-    unsubscribe(observer: IObserver): void {
-        this.observers = this.observers.filter(obs => obs !== observer);
-    }
-
-    notify(data: any): void {
-        this.observers.forEach(observer => observer.update(data));
+    getContent(): string {
+        return this.content;
     }
 }
 
-class StockObserver implements IObserver {
-    private stockPrice: number;
+abstract class SupportHandler {
+    private nextHandler: SupportHandler | null = null;
 
-    constructor() {
-        this.stockPrice = 0;
+    setNext(handler: SupportHandler): SupportHandler {
+        this.nextHandler = handler;
+        return handler;
     }
 
-    update(data: any): void {
-        console.log(`Stock price updated: ${data}`);
-        this.stockPrice = data;
+    handleRequest(request: SupportRequest): AllResponse | null {
+        if (this.canHandle(request)) {
+            return this.handle(request);
+        } else if (this.nextHandler) {
+            return this.nextHandler.handleRequest(request);
+        } else {
+            return null;
+        }
     }
 
-    getStockPrice(): number {
-        return this.stockPrice;
+    abstract canHandle(request: SupportRequest): boolean;
+    abstract handle(request: SupportRequest): AllResponse;
+}
+
+class TechnicalSupportHandler extends SupportHandler {
+    canHandle(request: SupportRequest): boolean {
+        return request.getType() === "TechnicalSupport";
+    }
+
+    handle(request: SupportRequest): AllResponse {
+        return new AllResponse(`Technical support handled for ${request.getDetails()}`);
     }
 }
 
-const subject = new Subject();
+class PaymentHandler extends SupportHandler {
+    canHandle(request: SupportRequest): boolean {
+        return request.getType() === "PaymentIssue";
+    }
 
-const observer1 = new StockObserver();
-const observer2 = new StockObserver();
-
-subject.subscribe(observer1);
-subject.subscribe(observer2);
-
-subject.notify(200);
-console.log(`Observer 1 stock price: ${observer1.getStockPrice()}`);
-console.log(`Observer 2 stock price: ${observer2.getStockPrice()}`);
-subject.notify(180);
-console.log(`Observer 1 stock price: ${observer1.getStockPrice()}`);
-console.log(`Observer 2 stock price: ${observer2.getStockPrice()}`);
-
-// Task 2 //
-interface PaymentStrategy {
-    pay(amount: number): void;
-}
-
-class CreditCardPaymentStrategy implements PaymentStrategy {
-    pay(amount: number): void {
-        console.log(`Paid $${amount} with Credit Card`);
+    handle(request: SupportRequest): AllResponse {
+        return new AllResponse(`Payment issue handled for ${request.getDetails()}`);
     }
 }
 
-class PaypalPaymentStrategy implements PaymentStrategy {
-    pay(amount: number): void {
-        console.log(`Paid $${amount} with Paypal`);
+class ReturnHandler extends SupportHandler {
+    canHandle(request: SupportRequest): boolean {
+        return request.getType() === "ReturnRequest";
+    }
+
+    handle(request: SupportRequest): AllResponse {
+        return new AllResponse(`Return request handled for ${request.getDetails()}`);
     }
 }
 
-class BitcoinPaymentStrategy implements PaymentStrategy {
-    pay(amount: number): void {
-        console.log(`Paid $${amount} with Bitcoin`);
+const technicalSupportHandler = new TechnicalSupportHandler();
+const paymentHandler = new PaymentHandler();
+const returnHandler = new ReturnHandler();
+technicalSupportHandler.setNext(paymentHandler).setNext(returnHandler);
+
+// Task 2
+class Product {
+    private name: string;
+    private price: number;
+    private code: string;
+
+    constructor(name: string, price: number, code: string) {
+        this.name = name;
+        this.price = price;
+        this.code = code;
+    }
+
+    getInfo(): string {
+        return `Name: ${this.name}, Price: ${this.price}, Code: ${this.code}`;
     }
 }
 
-class PaymentContext {
-    public paymentStrategy: PaymentStrategy;
+interface IIteratorResult<T> {
+    value: T;
+    done: boolean;
+}
 
-    constructor(paymentStrategy: PaymentStrategy) {
-        this.paymentStrategy = paymentStrategy;
+interface Iterator<T> {
+    next(): IIteratorResult<T>;
+    hasNext(): boolean;
+}
+
+class ProductIterator implements Iterator<Product> {
+    private collection: ProductCollection;
+    private index: number = 0;
+
+    constructor(collection: ProductCollection) {
+        this.collection = collection;
     }
 
-    executePayment(amount: number): void {
-        this.paymentStrategy.pay(amount);
+    next(): IIteratorResult<Product> {
+        if (this.hasNext()) {
+            const product = this.collection.getProducts()[this.index];
+            this.index++;
+            return { value: product, done: false };
+        } else {
+            return { value: undefined as any, done: true };
+        }
+    }
+
+    hasNext(): boolean {
+        return this.index < this.collection.getProducts().length;
     }
 }
 
-const creditCardStrategy = new CreditCardPaymentStrategy();
-const paypalStrategy = new PaypalPaymentStrategy();
-const bitcoinStrategy = new BitcoinPaymentStrategy();
+class ProductCollection {
+    private products: Product[] = [];
 
-const paymentContext = new PaymentContext(creditCardStrategy);
-paymentContext.executePayment(100);
+    addProduct(product: Product): void {
+        this.products.push(product);
+    }
 
-paymentContext.paymentStrategy = paypalStrategy;
-paymentContext.executePayment(50);
+    createIterator(): Iterator<Product> {
+        return new ProductIterator(this);
+    }
 
-paymentContext.paymentStrategy = bitcoinStrategy;
-paymentContext.executePayment(200);
+    getProducts(): Product[] {
+        return this.products;
+    }
+}
+
+const product1 = new Product("Laptop", 1200, "ABC123");
+const product2 = new Product("Smartphone", 800, "DEF456");
+const product3 = new Product("Headphones", 150, "GHI789");
+const product4 = new Product("Camera", 500, "JKL012");
+const product5 = new Product("Printer", 300, "MNO345");
+
+const productCollection = new ProductCollection();
+productCollection.addProduct(product1);
+productCollection.addProduct(product2);
+productCollection.addProduct(product3);
+productCollection.addProduct(product4);
+productCollection.addProduct(product5);
+
+const iterator = productCollection.createIterator();
+let result = iterator.next();
+
+while (!result.done) {
+    const currentProduct = result.value;
+    console.log(currentProduct.getInfo());
+    result = iterator.next();
+}
+
+// Task 3
+class TextEditor {
+    private text: string = "";
+
+    getText(): string {
+        return this.text;
+    }
+
+    insertText(insertedText: string): void {
+        this.text += insertedText;
+    }
+
+    deleteText(length: number): void {
+        this.text = this.text.slice(0, -length);
+    }
+}
+
+interface Command {
+    execute(): void;
+}
+
+class InsertCommand implements Command {
+    private editor: TextEditor;
+    private insertedText: string;
+
+    constructor(editor: TextEditor, insertedText: string) {
+        this.editor = editor;
+        this.insertedText = insertedText;
+    }
+
+    execute(): void {
+        this.editor.insertText(this.insertedText);
+    }
+}
+
+class DeleteCommand implements Command {
+    private editor: TextEditor;
+    private deletedLength: number;
+
+    constructor(editor: TextEditor, deletedLength: number) {
+        this.editor = editor;
+        this.deletedLength = deletedLength;
+    }
+
+    execute(): void {
+        this.editor.deleteText(this.deletedLength);
+    }
+}
+
+class Invoker {
+    private commandStack: Command[] = [];
+
+    executeCommand(command: Command): void {
+        command.execute();
+        this.commandStack.push(command);
+    }
+
+    undo(): void {
+        const lastCommand = this.commandStack.pop();
+        if (lastCommand) {
+            console.log("Undoing last command.");
+        }
+    }
+
+    redo(): void {
+        console.log("Redoing last undone command.");
+    }
+}
+
+class Client {
+    static run(): void {
+        const editor = new TextEditor();
+        const invoker = new Invoker();
+
+        const insertCommand = new InsertCommand(editor, "Hello, ");
+        const deleteCommand = new DeleteCommand(editor, 5);
+
+        invoker.executeCommand(insertCommand);
+        console.log("After Insert: " + editor.getText());
+
+        invoker.executeCommand(deleteCommand);
+        console.log("After Delete: " + editor.getText());
+
+        invoker.undo();
+        console.log("After Undo: " + editor.getText());
+
+        invoker.redo();
+        console.log("After Redo: " + editor.getText());
+    }
+}
+Client.run();
+
+
+
 
